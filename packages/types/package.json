@@ -1,7 +1,7 @@
 {
   "name": "@repo/types",
   "version": "1.0.0",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "type": "commonjs",
   "dependencies": {
     "zod": "^4.0.14"

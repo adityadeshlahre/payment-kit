@@ -7,6 +7,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useRouter } from "next/navigation";
+import GoogleAuthButton from "./google-auth-button";
 
 export default function SignUpForm({
   onSwitchToSignIn,
@@ -154,6 +155,9 @@ export default function SignUpForm({
         >
           Already have an account? Sign In
         </Button>
+      </div>
+      <div className="mt-6">
+        <GoogleAuthButton label="Sign up with Google" />
       </div>
     </div>
   );

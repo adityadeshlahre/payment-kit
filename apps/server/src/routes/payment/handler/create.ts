@@ -3,7 +3,7 @@ import factory from "@/lib/factory";
 import { zValidator } from "@hono/zod-validator";
 import type { Context } from "hono";
 import { HTTPException } from "hono/http-exception";
-import { dodoPayment } from "@repo/types"
+import { dodoPayment } from "@repo/types";
 
 export const createPaymentHandler = factory.createHandlers(
   zValidator("json", dodoPayment),

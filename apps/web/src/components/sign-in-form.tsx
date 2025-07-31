@@ -7,13 +7,14 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useRouter } from "next/navigation";
+import GoogleAuthButton from "./google-auth-button";
 
 export default function SignInForm({
   onSwitchToSignUp,
 }: {
   onSwitchToSignUp: () => void;
 }) {
-  const router = useRouter()
+  const router = useRouter();
   const { isPending } = authClient.useSession();
 
   const form = useForm({
@@ -29,7 +30,7 @@ export default function SignInForm({
         },
         {
           onSuccess: () => {
-            router.push("/dashboard")
+            router.push("/dashboard");
             toast.success("Sign in successful");
           },
           onError: (error) => {
@@ -129,6 +130,9 @@ export default function SignInForm({
         >
           Need an account? Sign Up
         </Button>
+      </div>
+      <div className="mt-6">
+        <GoogleAuthButton label="Sign in with Google" />
       </div>
     </div>
   );

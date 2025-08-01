@@ -5,18 +5,17 @@ import { HTTPException } from "hono/http-exception";
 import type { Context } from "hono";
 import { Webhook } from "standardwebhooks";
 
-const webhook = new Webhook(process.env.DODO_PAYMENTS_WEBHOOK_KEY!);
+const webhook = new Webhook(process.env.DODO_PAYMENTS_WEBHOOK_SECRET as string);
 
 export const webhookSend = factory.createHandlers(async (c: Context) => {
-  const headersList = c.req.header();
-
   try {
     const rawBody = await c.req.text();
     const webhookHeaders = {
-      "webhook-id": headersList.get("webhook-id") || "",
-      "webhook-signature": headersList.get("webhook-signature") || "",
-      "webhook-timestamp": headersList.get("webhook-timestamp") || "",
+      "webhook-id": c.req.header("webhook-id") || "",
+      "webhook-signature": c.req.header("webhook-signature") || "",
+      "webhook-timestamp": c.req.header("webhook-timestamp") || "",
     };
+
     await webhook.verify(rawBody, webhookHeaders);
     const payload = JSON.parse(rawBody);
 

@@ -18,7 +18,7 @@ export default async function Product() {
 
   const checkoutProduct = async (productId: number) => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/checkout?productId=${productId}`,
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/checkout?productId=${productId}`,
       {
         cache: "no-store",
       },

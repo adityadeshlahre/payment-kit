@@ -12,8 +12,12 @@ import { db } from "../db";
 import * as schema from "../db/schema/auth";
 
 export const dodoPayments = new DodoPayments({
-  bearerToken: process.env.DODO_PAYMENTS_API_KEY as string,
-  environment: "test_mode",
+  bearerToken:
+    process.env.NODE_ENV === "development"
+      ? process.env.DODO_API_KEY_TEST
+      : process.env.DODO_API_KEY_LIVE,
+  environment:
+    process.env.NODE_ENV === "development" ? "test_mode" : "live_mode",
 });
 
 export const auth = betterAuth({

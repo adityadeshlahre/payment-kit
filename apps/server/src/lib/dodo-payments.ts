@@ -99,5 +99,7 @@ class DodoPaymentsClient {
 }
 
 export const dodoPaymentsClient = new DodoPaymentsClient(
-  process.env.DODO_PAYMENTS_API_KEY || "",
+  process.env.NODE_ENV === "development"
+    ? (process.env.DODO_API_KEY_TEST as string)
+    : (process.env.DODO_API_KEY_LIVE as string),
 );

@@ -1,4 +1,4 @@
-import { dodoPayments } from "@/lib/auth";
+import { dodoPaymentClient } from "@/lib/auth";
 import { HttpStatus } from "@/lib/errors";
 import factory from "@/lib/factory";
 import type { Context } from "hono";
@@ -16,7 +16,7 @@ export const oneTimeDodoPaymentHandler = factory.createHandlers(
         quantity: 1,
       };
 
-      const response = await dodoPayments.payments.create({
+      const response = await dodoPaymentClient.payments.create({
         // GET BILLING, CUSTOMER INFO FROM CUSTOMER AND PASS IT.
         // FOR COUNTRY CODE THE VALUE SHOULD BE - ISO country code alpha2 variant
         billing: {

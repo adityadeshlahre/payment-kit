@@ -2,6 +2,7 @@ import { HttpStatus } from "@/lib/errors";
 import factory from "@/lib/factory";
 import { HTTPException } from "hono/http-exception";
 import type { Context } from "hono";
+import { dodoPaymentClient } from "@/lib/auth";
 
 export const getPaymentWithIdHandler = factory.createHandlers(
   async (c: Context) => {
@@ -10,8 +11,8 @@ export const getPaymentWithIdHandler = factory.createHandlers(
       return c.json({ error: "Payment ID is required" }, 400);
     }
     try {
-      const paymentData = { id, status: "completed" };
-      return c.json(paymentData);
+      const paymentData = dodoPaymentClient.payments.retrieve(id);
+      return c.json(paymentData, { status: HttpStatus.HTTP_200_OK });
     } catch (error) {
       console.error("Error retrieving payment:", error);
       throw new HTTPException(HttpStatus.HTTP_500_INTERNAL_SERVER_ERROR, {

@@ -11,7 +11,7 @@ import { expo } from "@better-auth/expo";
 import { db } from "../db";
 import * as schema from "../db/schema/auth";
 
-export const dodoPayments = new DodoPayments({
+export const dodoPaymentClient = new DodoPayments({
   bearerToken:
     process.env.NODE_ENV === "development"
       ? process.env.DODO_API_KEY_TEST
@@ -41,7 +41,7 @@ export const auth = betterAuth({
   plugins: [
     expo(),
     dodopayments({
-      client: dodoPayments,
+      client: dodoPaymentClient,
       createCustomerOnSignUp: true,
       use: [
         checkout({

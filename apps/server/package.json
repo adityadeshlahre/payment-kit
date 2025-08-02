@@ -16,6 +16,7 @@
   "dependencies": {
     "@better-auth/expo": "^1.3.4",
     "@dodopayments/better-auth": "^1.1.1",
+    "@dodopayments/hono": "^0.1.1",
     "@hono/zod-validator": "^0.7.2",
     "@repo/types": "workspace:*",
     "better-auth": "^1.3.4",

@@ -1,28 +1,69 @@
 import { HttpStatus } from "@/lib/errors";
 import factory from "@/lib/factory";
 import { zValidator } from "@hono/zod-validator";
-import type { Context } from "hono";
 import { HTTPException } from "hono/http-exception";
-import { dodoPayment } from "@repo/types";
+import {
+  dodoPaymentCreatePaymentSchema,
+  type DodoPaymentCreatePaymentInput,
+  type ProductCartItemInput,
+} from "@repo/types";
+import { dodoPaymentClient } from "@/lib/auth";
+import { describeRoute } from "hono-openapi";
+import { resolver, validator } from "hono-openapi/zod";
 
 export const createPaymentHandler = factory.createHandlers(
-  zValidator("json", dodoPayment),
-  async (c: Context) => {
+  describeRoute({
+    tags: ["payments"],
+    responses: {
+      [HttpStatus.HTTP_201_CREATED]: {
+        description: "Payment created successfully",
+        content: {
+          "application/json": {
+            schema: resolver(dodoPaymentCreatePaymentSchema),
+          },
+        },
+      },
+
+      [HttpStatus.HTTP_500_INTERNAL_SERVER_ERROR]: {
+        description: "Internal server error",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                message: { type: "string" },
+              },
+            },
+          },
+        },
+      },
+    },
+  }),
+  validator("json", dodoPaymentCreatePaymentSchema),
+  zValidator("json", dodoPaymentCreatePaymentSchema),
+  async (c) => {
+    const input: DodoPaymentCreatePaymentInput = c.req.valid("json");
     try {
-      return c.json(
-        {
-          id: "payment123",
-          status: "created",
-          amount: 100,
-          currency: "USD",
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          metadata: {},
+      const paymentData = await dodoPaymentClient.payments.create({
+        billing: {
+          city: input.billing.city,
+          country: input.billing.country,
+          state: input.billing.state,
+          street: input.billing.street,
+          zipcode: input.billing.zipcode,
         },
-        {
-          status: HttpStatus.HTTP_201_CREATED,
+        customer: {
+          customer_id: input.customer.customer_id,
         },
-      );
+        product_cart: input.product_cart.map((item: ProductCartItemInput) => ({
+          product_id: item.product_id,
+          quantity: item.quantity,
+        })),
+      });
+
+      return c.json(paymentData, {
+        status: HttpStatus.HTTP_201_CREATED,
+      });
     } catch (error) {
       console.error("Error creating payment:", error);
       throw new HTTPException(HttpStatus.HTTP_500_INTERNAL_SERVER_ERROR, {

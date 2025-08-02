@@ -4,6 +4,8 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { appRouter } from "./routers";
+import { openAPISpecs } from "hono-openapi";
+import { Scalar } from "@scalar/hono-api-reference";
 
 const app = new Hono();
 
@@ -15,6 +17,31 @@ app.use(
     allowMethods: ["GET", "POST", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
     credentials: true,
+  }),
+);
+app.get(
+  "/openapi",
+  openAPISpecs(app, {
+    documentation: {
+      info: {
+        title: "Payment Kit API",
+        description: "Payment Kit API documentation",
+        version: "1.0.0",
+      },
+      servers: [
+        {
+          url: process.env.API_URL || "http://localhost:3000",
+          description: "Development server",
+        },
+      ],
+    },
+  }),
+);
+app.get(
+  "/docs",
+  Scalar({
+    theme: "deepSpace",
+    url: "/openapi",
   }),
 );
 

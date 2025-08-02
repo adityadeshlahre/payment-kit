@@ -8,8 +8,38 @@ import {
   type ProductCartItemInput,
 } from "@repo/types/payments/create-one-time-payment-schema";
 import { dodoPaymentClient } from "@/lib/auth";
+import { describeRoute } from "hono-openapi";
+import { resolver, validator } from "hono-openapi/zod";
 
 export const createPaymentHandler = factory.createHandlers(
+  describeRoute({
+    tags: ["payments"],
+    responses: {
+      [HttpStatus.HTTP_201_CREATED]: {
+        description: "Payment created successfully",
+        content: {
+          "application/json": {
+            schema: resolver(dodoPaymentCreatePaymentSchema),
+          },
+        },
+      },
+
+      [HttpStatus.HTTP_500_INTERNAL_SERVER_ERROR]: {
+        description: "Internal server error",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                message: { type: "string" },
+              },
+            },
+          },
+        },
+      },
+    },
+  }),
+  validator("json", dodoPaymentCreatePaymentSchema),
   zValidator("json", dodoPaymentCreatePaymentSchema),
   async (c) => {
     const input: DodoPaymentCreatePaymentInput = c.req.valid("json");

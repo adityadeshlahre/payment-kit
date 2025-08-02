@@ -6,7 +6,7 @@ import {
   dodoPaymentCreatePaymentSchema,
   type DodoPaymentCreatePaymentInput,
   type ProductCartItemInput,
-} from "@repo/types/payments/create-one-time-payment-schema";
+} from "@repo/types";
 import { dodoPaymentClient } from "@/lib/auth";
 import { describeRoute } from "hono-openapi";
 import { resolver, validator } from "hono-openapi/zod";

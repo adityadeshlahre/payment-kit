@@ -60,7 +60,7 @@ export interface Metadata {
 }
 
 export interface ProductCart {
-  amount: number;
+  amount?: number;
   product_id: string;
   quantity: number;
 }

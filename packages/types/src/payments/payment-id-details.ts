@@ -1,5 +1,6 @@
 import { z } from "zod";
 import {
+  Addon,
   Customer,
   Metadata,
   ProductCart,
@@ -76,4 +77,30 @@ export interface Refund {
   reason: string;
   refund_id: string;
   status: string;
+}
+
+export interface subscriptionPaymentIdDetailsResponse {
+  addons: Addon[];
+  billing: Billing;
+  cancel_at_next_billing_date: boolean;
+  cancelled_at: string;
+  created_at: string;
+  currency: string;
+  customer: Customer;
+  discount_id: string;
+  metadata: Metadata;
+  next_billing_date: string;
+  on_demand: boolean;
+  payment_frequency_count: number;
+  payment_frequency_interval: string;
+  previous_billing_date: string;
+  product_id: string;
+  quantity: number;
+  recurring_pre_tax_amount: number;
+  status: string;
+  subscription_id: string;
+  subscription_period_count: number;
+  subscription_period_interval: string;
+  tax_inclusive: boolean;
+  trial_period_days: number;
 }

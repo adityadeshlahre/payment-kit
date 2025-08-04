@@ -4,19 +4,22 @@ import { zValidator } from "@hono/zod-validator";
 import { HTTPException } from "hono/http-exception";
 import {
   dodoPaymentCreatePaymentSchema,
+  dodoPaymentSubscriptionCreatePaymentSchema,
   type DodoPaymentCreatePaymentInput,
+  type DodoPaymentSubscriptionCreatePaymentInput,
   type ProductCartItemInput,
 } from "@repo/types";
 import { dodoPaymentClient } from "@/lib/auth";
 import { describeRoute } from "hono-openapi";
 import { resolver, validator } from "hono-openapi/zod";
+import type { CountryCode } from "dodopayments/resources/misc";
 
-export const createPaymentHandler = factory.createHandlers(
+export const createOneTimePaymentHandler = factory.createHandlers(
   describeRoute({
     tags: ["payments"],
     responses: {
       [HttpStatus.HTTP_201_CREATED]: {
-        description: "Payment created successfully",
+        description: "One Time Payment created successfully",
         content: {
           "application/json": {
             schema: resolver(dodoPaymentCreatePaymentSchema),
@@ -47,7 +50,7 @@ export const createPaymentHandler = factory.createHandlers(
       const paymentData = await dodoPaymentClient.payments.create({
         billing: {
           city: input.billing.city,
-          country: input.billing.country,
+          country: input.billing.country as CountryCode,
           state: input.billing.state,
           street: input.billing.street,
           zipcode: input.billing.zipcode,

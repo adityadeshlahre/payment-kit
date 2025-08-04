@@ -1,10 +1,10 @@
 import { z } from "zod";
 
-const countryCodeSchema = z.enum(["US", "IN", "CA"]);
+import type { CountryCode } from "dodopayments/resources/misc";
 
 const BillingAddressSchema = z.object({
   city: z.string().min(1, "City is required"),
-  country: countryCodeSchema,
+  country: z.custom<CountryCode>(),
   state: z.string().min(1, "State is required"),
   street: z.string().min(1, "Street address is required"),
   zipcode: z.string().min(1, "ZIP code is required"),
@@ -23,6 +23,13 @@ export const dodoPaymentCreatePaymentSchema = z.object({
   billing: BillingAddressSchema,
   customer: AttachExistingCustomerSchema,
   product_cart: z.array(ProductCartItemSchema),
+});
+
+export const dodoPaymentSubscriptionCreatePaymentSchema = z.object({
+  billing: BillingAddressSchema,
+  customer: AttachExistingCustomerSchema,
+  product_id: z.string(),
+  quantity: z.number(),
 });
 
 export type BillingAddressInput = z.infer<typeof BillingAddressSchema>;
@@ -63,4 +70,32 @@ export interface ProductCart {
   amount?: number;
   product_id: string;
   quantity: number;
+}
+
+export type DodoPaymentSubscriptionCreatePaymentInput = z.infer<
+  typeof dodoPaymentSubscriptionCreatePaymentSchema
+>;
+
+export interface DodoPaymentSubscriptionCreatePaymentResponse {
+  addons: Addon[];
+  client_secret: string;
+  customer: Customer;
+  discount_id: string;
+  expires_on: string;
+  metadata: Metadata;
+  payment_id: string;
+  payment_link: string;
+  recurring_pre_tax_amount: number;
+  subscription_id: string;
+}
+
+export interface Addon {
+  addon_id: string;
+  quantity: number;
+}
+
+export interface Customer {
+  customer_id: string;
+  email: string;
+  name: string;
 }

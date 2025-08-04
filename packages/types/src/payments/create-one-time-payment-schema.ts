@@ -4,7 +4,8 @@ import type { CountryCode } from "dodopayments/resources/misc";
 
 const BillingAddressSchema = z.object({
   city: z.string().min(1, "City is required"),
-  country: z.custom<CountryCode>(),
+  country: z.custom<CountryCode>().meta({ type: "string", example: "US" }),
+  // country: z.enum(["IN", "US"]),
   state: z.string().min(1, "State is required"),
   street: z.string().min(1, "Street address is required"),
   zipcode: z.string().min(1, "ZIP code is required"),

@@ -5,7 +5,7 @@ import type { Context } from "hono";
 import { dodoPaymentClient } from "@/lib/auth";
 import { describeRoute } from "hono-openapi";
 import { resolver, validator } from "hono-openapi/zod";
-import { paymentIdDetailsSchema } from "@repo/types";
+import { errorResponseSchema, paymentIdDetailsSchema } from "@repo/types";
 import { zValidator } from "@hono/zod-validator";
 
 export const getOneTimePaymentWithIdHandler = factory.createHandlers(
@@ -25,12 +25,7 @@ export const getOneTimePaymentWithIdHandler = factory.createHandlers(
         description: "Internal server error",
         content: {
           "application/json": {
-            schema: {
-              type: "object",
-              properties: {
-                message: { type: "string" },
-              },
-            },
+            schema: resolver(errorResponseSchema),
           },
         },
       },

@@ -5,6 +5,7 @@ import { HTTPException } from "hono/http-exception";
 import {
   dodoPaymentCreatePaymentSchema,
   dodoPaymentSubscriptionCreatePaymentSchema,
+  errorResponseSchema,
   type DodoPaymentCreatePaymentInput,
   type DodoPaymentSubscriptionCreatePaymentInput,
   type ProductCartItemInput,
@@ -17,6 +18,13 @@ import type { CountryCode } from "dodopayments/resources/misc";
 export const createSubscriptionPaymentHandler = factory.createHandlers(
   describeRoute({
     tags: ["payments"],
+    requestBody: {
+      content: {
+        "application/json": {
+          schema: dodoPaymentCreatePaymentSchema,
+        },
+      },
+    },
     responses: {
       [HttpStatus.HTTP_201_CREATED]: {
         description: "Subscription payment created successfully",
@@ -31,12 +39,7 @@ export const createSubscriptionPaymentHandler = factory.createHandlers(
         description: "Internal server error",
         content: {
           "application/json": {
-            schema: {
-              type: "object",
-              properties: {
-                message: { type: "string" },
-              },
-            },
+            schema: resolver(errorResponseSchema),
           },
         },
       },

@@ -1,23 +1,27 @@
 import { z } from "zod";
 import type { Currency, TaxCategory } from "dodopayments/resources/misc";
-import { Addon } from "../payments/create-one-time-payment-schema";
 
 export const type = z.enum(["one_time_price"]);
 
 const price = z.object({
-  currency: z.custom<Currency>(),
+  currency: z.custom<Currency>().meta({
+    type: "string",
+    example: "USD",
+  }),
   discount: z
     .number()
     .min(0, "Discount must be a non-negative number")
     .default(0),
   price: z.number().min(0, "Price must be a positive number"),
   purchasing_power_parity: z.boolean().default(false),
-  type: "one_time_price",
+  type: z.literal("one_time_price"),
 });
 
 export const createProductSchema = z.object({
   price: price,
-  tax_category: z.custom<TaxCategory>(),
+  tax_category: z
+    .custom<TaxCategory>()
+    .meta({ type: "string", example: "digital_product" }),
 });
 
 export type CreateProductInput = z.infer<typeof createProductSchema>;

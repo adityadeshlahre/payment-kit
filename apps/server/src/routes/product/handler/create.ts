@@ -2,7 +2,7 @@ import { dodoPaymentClient } from "@/lib/auth";
 import { HttpStatus } from "@/lib/errors";
 import factory from "@/lib/factory";
 import { zValidator } from "@hono/zod-validator";
-import { createProductSchema, type CreateProductInput } from "@repo/types";
+import { createProductSchema, errorResponseSchema } from "@repo/types";
 import type { ProductCreateParams } from "dodopayments/resources/index.mjs";
 import { describeRoute } from "hono-openapi";
 import { resolver, validator } from "hono-openapi/zod";
@@ -26,12 +26,7 @@ export const createProductHandler = factory.createHandlers(
         description: "Internal server error",
         content: {
           "application/json": {
-            schema: {
-              type: "object",
-              properties: {
-                message: { type: "string" },
-              },
-            },
+            schema: resolver(errorResponseSchema),
           },
         },
       },

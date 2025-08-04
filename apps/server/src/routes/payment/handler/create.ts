@@ -5,6 +5,7 @@ import { HTTPException } from "hono/http-exception";
 import {
   dodoPaymentCreatePaymentSchema,
   dodoPaymentSubscriptionCreatePaymentSchema,
+  errorResponseSchema,
   type DodoPaymentCreatePaymentInput,
   type DodoPaymentSubscriptionCreatePaymentInput,
   type ProductCartItemInput,
@@ -31,12 +32,7 @@ export const createOneTimePaymentHandler = factory.createHandlers(
         description: "Internal server error",
         content: {
           "application/json": {
-            schema: {
-              type: "object",
-              properties: {
-                message: { type: "string" },
-              },
-            },
+            schema: resolver(errorResponseSchema),
           },
         },
       },

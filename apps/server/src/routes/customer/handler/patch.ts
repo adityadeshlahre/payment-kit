@@ -4,22 +4,26 @@ import factory from "@/lib/factory";
 import type { Context } from "hono";
 import { HTTPException } from "hono/http-exception";
 
-export const getCustomerDetailsWithIdHandler = factory.createHandlers(
+export const patchCustomerDetailsWithIdHandler = factory.createHandlers(
   async (c: Context) => {
     const { id: customerId } = c.req.param();
     if (!customerId) {
       return c.json({ error: "Customer ID is required" }, 400);
     }
     try {
-      const response = await dodoPaymentClient.customers.retrieve(customerId);
+      const body = await c.req.json();
+      const response = await dodoPaymentClient.customers.update(
+        customerId,
+        body,
+      );
       return c.json(response);
     } catch (error) {
-      console.error("Error retrieving customer details:", error);
+      console.error("Error updating customer details:", error);
       throw new HTTPException(HttpStatus.HTTP_500_INTERNAL_SERVER_ERROR, {
         message:
           error instanceof Error
             ? error.message
-            : "Failed to retrieve customer details",
+            : "Failed to update customer details",
       });
     }
   },

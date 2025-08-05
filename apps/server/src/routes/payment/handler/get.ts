@@ -21,6 +21,15 @@ export const getOneTimePaymentWithIdHandler = factory.createHandlers(
         },
       },
 
+      [HttpStatus.HTTP_400_BAD_REQUEST]: {
+        description: "Bad request, missing payment ID",
+        content: {
+          "application/json": {
+            schema: resolver(errorResponseSchema),
+          },
+        },
+      },
+
       [HttpStatus.HTTP_500_INTERNAL_SERVER_ERROR]: {
         description: "Internal server error",
         content: {
@@ -31,8 +40,8 @@ export const getOneTimePaymentWithIdHandler = factory.createHandlers(
       },
     },
   }),
-  validator("json", paymentIdDetailsSchema),
-  zValidator("json", paymentIdDetailsSchema),
+  validator("param", paymentIdDetailsSchema),
+  zValidator("param", paymentIdDetailsSchema),
   async (c: Context) => {
     const { id: paymentId } = c.req.param();
     if (!paymentId) {

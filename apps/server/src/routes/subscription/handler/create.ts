@@ -3,12 +3,9 @@ import factory from "@/lib/factory";
 import { zValidator } from "@hono/zod-validator";
 import { HTTPException } from "hono/http-exception";
 import {
-  dodoPaymentCreatePaymentSchema,
   dodoPaymentSubscriptionCreatePaymentSchema,
   errorResponseSchema,
-  type DodoPaymentCreatePaymentInput,
   type DodoPaymentSubscriptionCreatePaymentInput,
-  type ProductCartItemInput,
 } from "@repo/types";
 import { dodoPaymentClient } from "@/lib/auth";
 import { describeRoute } from "hono-openapi";
@@ -18,19 +15,12 @@ import type { CountryCode } from "dodopayments/resources/misc";
 export const createSubscriptionPaymentHandler = factory.createHandlers(
   describeRoute({
     tags: ["payments"],
-    requestBody: {
-      content: {
-        "application/json": {
-          schema: dodoPaymentCreatePaymentSchema,
-        },
-      },
-    },
     responses: {
       [HttpStatus.HTTP_201_CREATED]: {
         description: "Subscription payment created successfully",
         content: {
           "application/json": {
-            schema: resolver(dodoPaymentCreatePaymentSchema),
+            schema: resolver(dodoPaymentSubscriptionCreatePaymentSchema),
           },
         },
       },

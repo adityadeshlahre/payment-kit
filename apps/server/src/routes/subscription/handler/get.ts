@@ -31,8 +31,8 @@ export const getSubscriptionWithIdHandler = factory.createHandlers(
       },
     },
   }),
-  validator("json", paymentIdDetailsSchema),
-  zValidator("json", paymentIdDetailsSchema),
+  validator("param", paymentIdDetailsSchema),
+  zValidator("param", paymentIdDetailsSchema),
   async (c: Context) => {
     const { id: subscriptionId } = c.req.param();
     if (!subscriptionId) {

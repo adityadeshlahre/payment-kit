@@ -1,6 +1,21 @@
 import { z } from "zod";
 import type { Currency, TaxCategory } from "dodopayments/resources/misc";
 
+const productId = z.string().min(1, "Product ID must be a non-empty string");
+
+export const productIdSchema = z.object({
+  id: productId,
+});
+
+export const productFileNameSchema = z.object({
+  file_name: z.string().min(1, "File name must be a non-empty string"),
+});
+
+export const productFileNameUpdateResponseSchema = z.object({
+  file_id: z.string(),
+  url: z.string(),
+});
+
 export const type = z.enum(["one_time_price"]);
 
 const price = z.object({
@@ -55,4 +70,50 @@ export interface Price {
   suggested_price: number;
   tax_inclusive: boolean;
   type: string;
+}
+
+export interface productListResponse {
+  items: productDetails[];
+}
+
+export const productDetailsSchema = z.object({
+  business_id: z.string(),
+  created_at: z.string(),
+  currency: z.custom<Currency>().meta({
+    type: "string",
+    example: "USD",
+  }),
+  description: z.string(),
+  image: z.string(),
+  is_recurring: z.boolean(),
+  name: z.string(),
+  price: z.number(),
+  price_detail: z.any(),
+  product_id: z.string(),
+  tax_category: z.custom<TaxCategory>().meta({
+    type: "string",
+    example: "digital_product",
+  }),
+  tax_inclusive: z.boolean(),
+  updated_at: z.string(),
+});
+
+export const productListResponseSchema = z.object({
+  items: z.array(productDetailsSchema),
+});
+
+export interface productDetails {
+  business_id: string;
+  created_at: string;
+  currency: any;
+  description: string;
+  image: string;
+  is_recurring: boolean;
+  name: string;
+  price: number;
+  price_detail: any;
+  product_id: string;
+  tax_category: string;
+  tax_inclusive: boolean;
+  updated_at: string;
 }

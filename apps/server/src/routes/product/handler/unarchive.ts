@@ -1,29 +1,34 @@
 import { dodoPaymentClient } from "@/lib/auth";
 import { HttpStatus } from "@/lib/errors";
 import factory from "@/lib/factory";
-import { zValidator } from "@hono/zod-validator";
-import {
-  createProductSchema,
-  errorResponseSchema,
-  productDetailsSchema,
-  productIdSchema,
-  type CreateProductResponse,
-} from "@repo/types";
+import { errorResponseSchema } from "@repo/types";
 import type { Context } from "hono";
 import { describeRoute } from "hono-openapi";
-import { resolver, validator } from "hono-openapi/zod";
+import { resolver } from "hono-openapi/zod";
 import { HTTPException } from "hono/http-exception";
 
-export const getProductDetailsWithIdHandler = factory.createHandlers(
+export const unarchiveProductUsingProductIdHandler = factory.createHandlers(
   describeRoute({
     tags: ["products"],
-    description: "Retrieve product details by product ID",
+    description: "Unarchive a product by product ID",
     responses: {
       [HttpStatus.HTTP_200_OK]: {
-        description: "Product details retrieved successfully",
+        description: "Product unarchived successfully",
         content: {
           "application/json": {
-            schema: resolver(productDetailsSchema),
+            schema: {
+              type: "object",
+              properties: {
+                status: {
+                  type: "string",
+                  enum: ["success"],
+                },
+                message: {
+                  type: "string",
+                  description: "Success message",
+                },
+              },
+            },
           },
         },
       },
@@ -45,28 +50,27 @@ export const getProductDetailsWithIdHandler = factory.createHandlers(
       },
     },
   }),
-  validator("param", productIdSchema),
-  zValidator("param", productIdSchema),
   async (c: Context) => {
     const { id: productId } = c.req.param();
     if (!productId) {
-      return c.json({ error: "Product ID is required" }, 400);
+      return c.json(
+        { error: "Product ID is required" },
+        { status: HttpStatus.HTTP_400_BAD_REQUEST },
+      );
     }
     try {
-      const response = await dodoPaymentClient.products.retrieve(productId);
-      // const productDetails: CreateProductResponse = {
-      //   ...response,
-      //   description: response.description || "",
-      //   addons: response.addons || [],
-      // };
-      return c.json(response);
+      await dodoPaymentClient.products.unarchive(productId);
+      return c.json(
+        { status: "success", message: "Product unarchived successfully" },
+        { status: HttpStatus.HTTP_200_OK },
+      );
     } catch (error) {
-      console.error("Error retrieving product details:", error);
+      console.error("Error unarchiving product:", error);
       throw new HTTPException(HttpStatus.HTTP_500_INTERNAL_SERVER_ERROR, {
         message:
           error instanceof Error
             ? error.message
-            : "Failed to retrieve product details",
+            : "Failed to unarchive product",
       });
     }
   },

@@ -10,7 +10,7 @@ import { zValidator } from "@hono/zod-validator";
 
 export const getSubscriptionWithIdHandler = factory.createHandlers(
   describeRoute({
-    tags: ["payments"],
+    tags: ["subscription"],
     responses: {
       [HttpStatus.HTTP_200_OK]: {
         description: "Subscription retrieved successfully",

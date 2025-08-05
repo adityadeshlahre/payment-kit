@@ -14,7 +14,7 @@ import type { CountryCode } from "dodopayments/resources/misc";
 
 export const createSubscriptionPaymentHandler = factory.createHandlers(
   describeRoute({
-    tags: ["payments"],
+    tags: ["subscription"],
     responses: {
       [HttpStatus.HTTP_201_CREATED]: {
         description: "Subscription payment created successfully",

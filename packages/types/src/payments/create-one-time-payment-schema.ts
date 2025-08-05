@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import type { CountryCode } from "dodopayments/resources/misc";
 
-const BillingAddressSchema = z.object({
+export const BillingAddressSchema = z.object({
   city: z.string().min(1, "City is required"),
   country: z.custom<CountryCode>().meta({ type: "string", example: "US" }),
   // country: z.enum(["IN", "US"]),
@@ -11,11 +11,11 @@ const BillingAddressSchema = z.object({
   zipcode: z.string().min(1, "ZIP code is required"),
 });
 
-const AttachExistingCustomerSchema = z.object({
+export const AttachExistingCustomerSchema = z.object({
   customer_id: z.string(),
 });
 
-const ProductCartItemSchema = z.object({
+export const ProductCartItemSchema = z.object({
   product_id: z.string(),
   quantity: z.number(),
 });
@@ -57,15 +57,29 @@ export interface DodoPaymentCreatePaymentResponse {
   total_amount: number;
 }
 
+export const CustomerSchema = z.object({
+  customer_id: z.string(),
+  email: z.string().email("Invalid email format"),
+  name: z.string().min(1, "Name is required"),
+});
+
 export interface Customer {
   customer_id: string;
   email: string;
   name: string;
 }
 
+export const MetadataSchema = z.record(z.string(), z.string());
+
 export interface Metadata {
   [key: string]: string; // or `any` if needed
 }
+
+export const ProductCartSchema = z.object({
+  amount: z.number().optional(),
+  product_id: z.string(),
+  quantity: z.number(),
+});
 
 export interface ProductCart {
   amount?: number;
@@ -89,6 +103,11 @@ export interface DodoPaymentSubscriptionCreatePaymentResponse {
   recurring_pre_tax_amount: number;
   subscription_id: string;
 }
+
+export const AddonSchema = z.object({
+  addon_id: z.string(),
+  quantity: z.number().min(1, "Quantity must be at least 1"),
+});
 
 export interface Addon {
   addon_id: string;

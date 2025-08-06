@@ -41,6 +41,31 @@ export function VerifyEmailTemplate({
       <p>If you did not create an account with us, please ignore this email.</p>
 
       <p>
+        If the button above does not work, you can also verify your email by
+        copying and pasting the following link into your browser:
+      </p>
+      <p>
+        <a
+          href={url}
+          style={{
+            color: "#4CAF50",
+            fontSize: "16px",
+            backgroundColor: "#f9fafb",
+            padding: "15px",
+            borderRadius: "5px",
+            textDecoration: "none",
+            boarder: "1px solid #e5e7eb",
+            wordBreak: "break-all",
+            whiteSpace: "pre-wrap",
+            fontFamily: "Arial, sans-serif",
+            lineHeight: "1.5",
+          }}
+        >
+          {url}
+        </a>
+      </p>
+
+      <p>
         If you have any questions, feel free to contact us at{" "}
         <a href={`mailto:${fromMail}`}>{fromMail}</a>.
       </p>
@@ -83,6 +108,31 @@ export function ResetPasswordTemplate({
       >
         Reset Password
       </button>
+
+      <p>
+        If the button above does not work, you can also verify your email by
+        copying and pasting the following link into your browser:
+      </p>
+      <p>
+        <a
+          href={url}
+          style={{
+            color: "#4CAF50",
+            fontSize: "16px",
+            backgroundColor: "#f9fafb",
+            padding: "15px",
+            borderRadius: "5px",
+            textDecoration: "none",
+            boarder: "1px solid #e5e7eb",
+            wordBreak: "break-all",
+            whiteSpace: "pre-wrap",
+            fontFamily: "Arial, sans-serif",
+            lineHeight: "1.5",
+          }}
+        >
+          {url}
+        </a>
+      </p>
 
       <p>
         If you have any questions, feel free to contact us at{" "}

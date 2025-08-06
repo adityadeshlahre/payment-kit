@@ -211,3 +211,41 @@ export interface Billing {
   street: string;
   zipcode: string;
 }
+
+export interface PaymentListResponse {
+  items: PaymentListDetails[];
+}
+
+export interface PaymentListDetails {
+  brand_id: string;
+  created_at: string;
+  currency: string;
+  customer: Customer;
+  digital_products_delivered: boolean;
+  metadata: Metadata;
+  payment_id: string;
+  payment_method: string;
+  payment_method_type: string;
+  status: any;
+  subscription_id: string;
+  total_amount: number;
+}
+
+export const paymentListDetailsSchema = z.object({
+  brand_id: z.string(),
+  created_at: z.string(),
+  currency: z.string(),
+  customer: CustomerSchema,
+  digital_products_delivered: z.boolean(),
+  metadata: MetadataSchema,
+  payment_id: z.string(),
+  payment_method: z.string(),
+  payment_method_type: z.string(),
+  status: z.any(),
+  subscription_id: z.string(),
+  total_amount: z.number(),
+});
+
+export const paymentListResponseSchema = z.object({
+  items: z.array(paymentListDetailsSchema),
+});

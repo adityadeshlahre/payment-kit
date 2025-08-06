@@ -5,7 +5,11 @@ import type { Context } from "hono";
 import { dodoPaymentClient } from "@/lib/auth";
 import { describeRoute } from "hono-openapi";
 import { resolver, validator } from "hono-openapi/zod";
-import { errorResponseSchema, paymentIdDetailsSchema } from "@repo/types";
+import {
+  errorResponseSchema,
+  paymentIdDetailsSchema,
+  paymentListResponseSchema,
+} from "@repo/types";
 import { zValidator } from "@hono/zod-validator";
 
 export const getOneTimePaymentWithIdHandler = factory.createHandlers(
@@ -78,6 +82,45 @@ export const getInvoiceWithPaymentIdHandler = factory.createHandlers(
       throw new HTTPException(HttpStatus.HTTP_500_INTERNAL_SERVER_ERROR, {
         message:
           error instanceof Error ? error.message : "Failed to retrieve invoice",
+      });
+    }
+  },
+);
+
+export const getPaymentListHandler = factory.createHandlers(
+  describeRoute({
+    tags: ["payments"],
+    responses: {
+      [HttpStatus.HTTP_200_OK]: {
+        description: "List of payments retrieved successfully",
+        content: {
+          "application/json": {
+            schema: resolver(paymentListResponseSchema),
+          },
+        },
+      },
+
+      [HttpStatus.HTTP_500_INTERNAL_SERVER_ERROR]: {
+        description: "Internal server error",
+        content: {
+          "application/json": {
+            schema: resolver(errorResponseSchema),
+          },
+        },
+      },
+    },
+  }),
+  async (c: Context) => {
+    try {
+      const payments = await dodoPaymentClient.payments.list();
+      return c.json(payments, { status: HttpStatus.HTTP_200_OK });
+    } catch (error) {
+      console.error("Error retrieving payment list:", error);
+      throw new HTTPException(HttpStatus.HTTP_500_INTERNAL_SERVER_ERROR, {
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to retrieve payment list",
       });
     }
   },

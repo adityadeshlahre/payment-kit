@@ -1,18 +1,16 @@
-import * as React from "react";
-
-interface VerifyEmailTemplateProps {
+interface EmailTemplateProps {
   userEmail: string;
   url: string;
   fromName: string;
   fromMail: string;
 }
 
-export function VerifyEmailTemplate({
+export const VerifyEmailTemplate = ({
   fromMail,
   fromName,
   url,
   userEmail,
-}: VerifyEmailTemplateProps) {
+}: EmailTemplateProps) => {
   return (
     <div>
       <h1>Welcome, {userEmail}!</h1>
@@ -24,19 +22,20 @@ export function VerifyEmailTemplate({
         clicking the button below:
       </p>
 
-      <button
+      <a
+        href={url}
         style={{
           backgroundColor: "#4CAF50",
           color: "white",
           padding: "10px 20px",
           border: "none",
           borderRadius: "5px",
-          cursor: "pointer",
+          textDecoration: "none",
+          display: "inline-block",
         }}
-        onClick={() => (window.location.href = url)}
       >
         Verify Email
-      </button>
+      </a>
 
       <p>If you did not create an account with us, please ignore this email.</p>
 
@@ -54,7 +53,7 @@ export function VerifyEmailTemplate({
             padding: "15px",
             borderRadius: "5px",
             textDecoration: "none",
-            boarder: "1px solid #e5e7eb",
+            border: "1px solid #e5e7eb",
             wordBreak: "break-all",
             whiteSpace: "pre-wrap",
             fontFamily: "Arial, sans-serif",
@@ -76,14 +75,14 @@ export function VerifyEmailTemplate({
       <p>{fromName}</p>
     </div>
   );
-}
+};
 
-export function ResetPasswordTemplate({
+export const ResetPasswordTemplate = ({
   fromMail,
   fromName,
   url,
   userEmail,
-}: VerifyEmailTemplateProps) {
+}: EmailTemplateProps) => {
   return (
     <div>
       <h1>Password Reset Request</h1>
@@ -95,19 +94,20 @@ export function ResetPasswordTemplate({
 
       <p>To reset your password, please click the button below:</p>
 
-      <button
+      <a
+        href={url}
         style={{
           backgroundColor: "#4CAF50",
           color: "white",
           padding: "10px 20px",
           border: "none",
           borderRadius: "5px",
-          cursor: "pointer",
+          textDecoration: "none",
+          display: "inline-block",
         }}
-        onClick={() => (window.location.href = url)}
       >
         Reset Password
-      </button>
+      </a>
 
       <p>
         If the button above does not work, you can also verify your email by
@@ -123,7 +123,7 @@ export function ResetPasswordTemplate({
             padding: "15px",
             borderRadius: "5px",
             textDecoration: "none",
-            boarder: "1px solid #e5e7eb",
+            border: "1px solid #e5e7eb",
             wordBreak: "break-all",
             whiteSpace: "pre-wrap",
             fontFamily: "Arial, sans-serif",
@@ -145,4 +145,47 @@ export function ResetPasswordTemplate({
       <p>{fromName}</p>
     </div>
   );
-}
+};
+
+export const GenericEmailTemplate = ({
+  fromMail,
+  fromName,
+  url,
+  userEmail,
+}: EmailTemplateProps) => {
+  return (
+    <div>
+      <h1>Hello, {userEmail}!</h1>
+
+      <p>You have received this email from {fromName}.</p>
+
+      {url && (
+        <>
+          <p>Please click the button below to continue:</p>
+          <a
+            href={url}
+            style={{
+              backgroundColor: "#4CAF50",
+              color: "white",
+              padding: "10px 20px",
+              border: "none",
+              borderRadius: "5px",
+              textDecoration: "none",
+              display: "inline-block",
+            }}
+          >
+            Continue
+          </a>
+        </>
+      )}
+
+      <p>
+        If you have any questions, feel free to contact us at{" "}
+        <a href={`mailto:${fromMail}`}>{fromMail}</a>.
+      </p>
+
+      <p>Best regards,</p>
+      <p>{fromName}</p>
+    </div>
+  );
+};

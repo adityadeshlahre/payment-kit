@@ -10,7 +10,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { expo } from "@better-auth/expo";
 import { db } from "../db";
 import * as schema from "../db/schema/auth";
-import { admin } from "better-auth/plugins";
+import { admin, openAPI } from "better-auth/plugins";
 
 export const dodoPaymentClient = new DodoPayments({
   bearerToken:
@@ -38,10 +38,13 @@ const createAuth = () =>
     emailAndPassword: {
       enabled: true,
     },
-    secret: process.env.BETTER_AUTH_SECRET,
-    baseURL: process.env.BETTER_AUTH_URL,
+    secret: process.env.BETTER_AUTH_SECRET as string,
+    baseURL: process.env.BETTER_AUTH_URL as string,
     plugins: [
       admin(),
+      openAPI({
+        path: "/docs",
+      }),
       expo(),
       dodopayments({
         client: dodoPaymentClient,

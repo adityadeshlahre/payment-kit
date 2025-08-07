@@ -3,7 +3,7 @@ import { HttpStatus } from "@/lib/errors";
 import factory from "@/lib/factory";
 import { HTTPException } from "hono/http-exception";
 
-export const enforceUserOrAdminAuth = factory.createMiddleware<>(
+export const enforceUserOrAdminAuth = factory.createMiddleware(
   async (c, next) => {
     const token = c.req.header("Authorization")?.replace("Bearer ", "");
     if (!token) {

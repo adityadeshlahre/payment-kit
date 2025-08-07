@@ -1,5 +1,6 @@
 import checkout from "@/routes/checkout/route";
 import customer from "@/routes/customer/route";
+import email from "@/routes/email/route";
 import payment from "@/routes/payment/route";
 import product from "@/routes/product/route";
 import subscription from "@/routes/subscription/route";
@@ -12,6 +13,7 @@ const api = new Hono()
   .route("/checkout", checkout)
   .route("/product", product)
   .route("/customer", customer)
+  .route("/email", email)
   .route("/webhook", webhook);
 
 export const appRouter = api;

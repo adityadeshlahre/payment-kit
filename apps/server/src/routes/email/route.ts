@@ -1,7 +1,9 @@
 import { Hono } from "hono";
-import { sendVerifyEmailResendEmailSendHandler } from "./handler/create";
+import { sendEmailHandler } from "./handler/create";
 
-const email = new Hono().get(
-  "/verify-email",
-  ...sendVerifyEmailResendEmailSendHandler,
+const email = new Hono().post(
+  "/send",
+  ...sendEmailHandler,
 );
+
+export default email;

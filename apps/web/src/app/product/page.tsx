@@ -1,40 +1,24 @@
+"use client";
+
 import ProductCard from "@/components/product-card";
+import { useProductsList } from "@/hooks/query/useProduct";
+import type { productDetails } from "@repo/types";
 
-export default async function Product() {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/products`,
-    {
-      cache: "no-store",
-    },
-  );
-  const products = await response.json();
-  type Product = {
-    product_id: number;
-    name: string;
-    description: string;
-    price: number;
-    is_recurring: boolean;
-  };
-
-  const checkoutProduct = async (productId: number) => {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/checkout?productId=${productId}`,
-      {
-        cache: "no-store",
-      },
-    );
-    const data = await response.json();
-  };
+export default function Product() {
+  const { data: products, isLoading, error } = useProductsList();
 
   return (
     <div>
       <h1 className="text-3xl font-semibold mb-6">
         Dodo Payments Product List
       </h1>
+      {isLoading && <div>Loading products...</div>}
+      {error && <div>Error loading products: {error.message}</div>}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {products.map((product: Product) => (
-          <ProductCard key={product.product_id} product={product} />
-        ))}
+        {products?.items &&
+          products.items.map((product: productDetails) => (
+            <ProductCard key={product.product_id} product={product} />
+          ))}
       </div>
     </div>
   );

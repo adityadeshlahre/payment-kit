@@ -2,7 +2,7 @@ import { dodoPaymentClient } from "@/lib/auth";
 import { HttpStatus } from "@/lib/errors";
 import factory from "@/lib/factory";
 import { zValidator } from "@hono/zod-validator";
-import { productListResponseSchema } from "@repo/types";
+import { errorResponseSchema, productListResponseSchema } from "@repo/types";
 import type { Context } from "hono";
 import { describeRoute } from "hono-openapi";
 import { resolver, validator } from "hono-openapi/zod";
@@ -26,7 +26,7 @@ export const getProductListUsingDodoPaymentClientHandler =
           description: "Internal server error",
           content: {
             "application/json": {
-              schema: resolver(productListResponseSchema),
+              schema: resolver(errorResponseSchema),
             },
           },
         },

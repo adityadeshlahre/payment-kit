@@ -1,16 +1,10 @@
 "use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import type { productDetails } from "@repo/types";
 
-type Product = {
-  product_id: number;
-  name: string;
-  description: string;
-  price: number;
-  is_recurring: boolean;
-};
-
-export default function ProductCard({ product }: { product: Product }) {
+export default function ProductCard({ product }: { product: productDetails }) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -26,7 +20,7 @@ export default function ProductCard({ product }: { product: Product }) {
         productType = "subscription";
       }
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/checkout/${productType}?productId=${productId}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/checkout/${productType}?productId=${productId}`,
         {
           cache: "no-store",
         },
@@ -34,7 +28,7 @@ export default function ProductCard({ product }: { product: Product }) {
       const data = await response.json();
       router.push(data.payment_link);
     } else {
-      let checkoutUrl = `https://test.checkout.dodopayments.com/buy/${productId}?quantity=1&redirect_url=${process.env.NEXT_PUBLIC_BASE_URL}`;
+      let checkoutUrl = `https://test.checkout.dodopayments.com/buy/${productId}?quantity=1&redirect_url=${process.env.NEXT_PUBLIC_SERVER_URL}`;
       router.push(checkoutUrl);
     }
   };
@@ -49,7 +43,7 @@ export default function ProductCard({ product }: { product: Product }) {
       <button
         className="text-xl font-bold text-black"
         onClick={() =>
-          checkoutProduct(product.product_id, product.is_recurring, false)
+          checkoutProduct(product.product_id as unknown as number, product.is_recurring, false)
         }
         disabled={loading}
       >

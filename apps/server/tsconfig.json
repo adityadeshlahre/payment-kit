@@ -16,7 +16,7 @@
     "types": [
       "bun"
     ],
-    "composite": false,
+    "composite": true,
     "jsx": "react-jsx",
     "allowImportingTsExtensions": true,
     "jsxImportSource": "hono/jsx"

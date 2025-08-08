@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "boiler-plate-with-payment",
-  description: "boiler-plate-with-payment",
+  title: "paymentkit",
+  description: "paymentkit",
 };
 
 export default function RootLayout({

@@ -1,7 +1,7 @@
 {
 	"$schema": "../../node_modules/wrangler/config-schema.json",
 	"main": ".open-next/worker.js",
-	"name": "boiler-plate-with-payment",
+	"name": "paymentkit",
 	"compatibility_date": "2025-07-05",
 	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
 	"assets": {

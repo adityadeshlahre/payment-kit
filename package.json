@@ -1,5 +1,5 @@
 {
-  "name": "boiler-plate-with-payment",
+  "name": "paymentkit",
   "private": true,
   "workspaces": [
     "apps/*",

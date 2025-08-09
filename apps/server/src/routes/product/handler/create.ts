@@ -21,7 +21,6 @@ export const createProductHandler = factory.createHandlers(
           },
         },
       },
-
       [HttpStatus.HTTP_500_INTERNAL_SERVER_ERROR]: {
         description: "Internal server error",
         content: {

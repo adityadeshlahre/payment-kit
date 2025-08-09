@@ -1,7 +1,12 @@
+"use client";
+
 import axiosInstance from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { queryKey } from "@repo/constants";
-import type { productDetails, productListResponse } from "@repo/types";
+import type {
+  productListResponse,
+  singleProductDetailsReponse,
+} from "@repo/types";
 
 export const useProductsList = () => {
   const handleFetchProductsList = async (): Promise<productListResponse> => {
@@ -20,7 +25,7 @@ export const useProductsList = () => {
 };
 
 export const useProduct = (productId: string) => {
-  const handleFetchProduct = async (): Promise<productDetails> => {
+  const handleFetchProduct = async (): Promise<singleProductDetailsReponse> => {
     const response = await axiosInstance.get(`/api/product/${productId}`);
     return response.data;
   };

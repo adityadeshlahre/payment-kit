@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { Currency, TaxCategory } from "dodopayments/resources/misc";
+import { Metadata } from "../payments/create-one-time-payment-schema";
 
 const productId = z.string().min(1, "Product ID must be a non-empty string");
 
@@ -116,4 +117,39 @@ export interface productDetails {
   tax_category: string;
   tax_inclusive: boolean;
   updated_at: string;
+}
+
+export interface singleProductDetailsReponse {
+  product_id: string;
+  business_id: string;
+  name: string;
+  description: string;
+  image: string;
+  created_at: string;
+  updated_at: string;
+  is_recurring: boolean;
+  tax_category: string;
+  price: Price;
+  license_key_enabled: boolean;
+  license_key_activations_limit: any;
+  license_key_duration: any;
+  license_key_activation_message: string;
+  addons: any[];
+  brand_id: string;
+  digital_product_delivery: any;
+  metadata: Metadata;
+}
+
+export interface Price {
+  type: string;
+  price: number;
+  currency: string;
+  tax_inclusive: boolean;
+  discount: number;
+  purchasing_power_parity: boolean;
+  payment_frequency_count: number;
+  payment_frequency_interval: string;
+  subscription_period_count: number;
+  subscription_period_interval: string;
+  trial_period_days: number;
 }

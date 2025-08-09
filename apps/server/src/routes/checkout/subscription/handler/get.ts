@@ -11,6 +11,40 @@ import { HTTPException } from "hono/http-exception";
 export const subscriptionDodoPaymentHandler = factory.createHandlers(
   describeRoute({
     tags: ["supscription payments"],
+    description: "Retrieve a subscription by ID",
+    parameters: [
+      {
+        name: "id",
+        in: "path",
+        description: "The ID of the payment to retrieve",
+        required: true,
+        schema: {
+          type: "string",
+          pattern: "^[a-zA-Z0-9_-]+$",
+        },
+      },
+      {
+        name: "quantity",
+        in: "query",
+        description: "The quantity of the product to purchase",
+        required: true,
+        schema: {
+          type: "integer",
+          minimum: 1,
+          maximum: 100,
+        },
+      },
+      {
+        name: "redirect_url",
+        in: "query",
+        description: "The URL to redirect to after payment",
+        required: true,
+        schema: {
+          type: "string",
+          format: "uri",
+        },
+      },
+    ],
     responses: {
       [HttpStatus.HTTP_200_OK]: {
         description: "Subscription retrieved successfully",
@@ -54,8 +88,20 @@ export const subscriptionDodoPaymentHandler = factory.createHandlers(
   async (c: Context) => {
     const { id: subscriptionId } = c.req.param();
     if (!subscriptionId) {
-      return c.json({ error: "Product ID is required" }, 400);
+      return c.json(
+        { error: "Subscription ID is required" },
+        { status: HttpStatus.HTTP_400_BAD_REQUEST },
+      );
     }
+
+    const redirect_url = c.req.query("redirect_url");
+    if (!redirect_url) {
+      return c.json(
+        { error: "Redirect URL is required" },
+        { status: HttpStatus.HTTP_400_BAD_REQUEST },
+      );
+    }
+
     try {
       const response =
         await dodoPaymentClient.subscriptions.retrieve(subscriptionId);

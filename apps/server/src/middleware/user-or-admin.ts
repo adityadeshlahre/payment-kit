@@ -5,12 +5,6 @@ import { HTTPException } from "hono/http-exception";
 
 export const enforceUserOrAdminAuth = factory.createMiddleware(
   async (c, next) => {
-    const token = c.req.header("Authorization")?.replace("Bearer ", "");
-    if (!token) {
-      throw new HTTPException(HttpStatus.HTTP_401_UNAUTHORIZED, {
-        message: "Missing authentication token",
-      });
-    }
     try {
       const session = await auth.api.getSession({
         headers: c.req.raw.headers,

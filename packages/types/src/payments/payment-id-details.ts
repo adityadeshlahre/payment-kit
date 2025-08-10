@@ -1,13 +1,12 @@
 import { z } from "zod";
 import {
-  Addon,
   AddonSchema,
   BillingAddressSchema,
-  Customer,
+  type Customer,
   CustomerSchema,
-  Metadata,
+  type Metadata,
   MetadataSchema,
-  ProductCart,
+  type ProductCart,
 } from "./create-one-time-payment-schema";
 import { Addons } from "dodopayments/resources/addons";
 
@@ -85,7 +84,7 @@ export interface Refund {
 }
 
 export interface subscriptionPaymentIdDetailsResponse {
-  addons: Addon[];
+  addons: Addons[];
   billing: Billing;
   cancel_at_next_billing_date: boolean;
   cancelled_at: string;

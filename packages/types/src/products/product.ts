@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { Currency, TaxCategory } from "dodopayments/resources/misc";
-import { Metadata } from "../payments/create-one-time-payment-schema";
+import type { Metadata } from "../payments/create-one-time-payment-schema";
 
 const productId = z.string().min(1, "Product ID must be a non-empty string");
 
@@ -20,10 +20,7 @@ export const productFileNameUpdateResponseSchema = z.object({
 export const type = z.enum(["one_time_price"]);
 
 const price = z.object({
-  currency: z.custom<Currency>().meta({
-    type: "string",
-    example: "USD",
-  }),
+  currency: z.string(),
   discount: z
     .number()
     .min(0, "Discount must be a non-negative number")
@@ -35,9 +32,10 @@ const price = z.object({
 
 export const createProductSchema = z.object({
   price: price,
-  tax_category: z
-    .custom<TaxCategory>()
-    .meta({ type: "string", example: "digital_product" }),
+  // tax_category: z
+  //   .custom<TaxCategory>()
+  //   .meta({ type: "string", example: "digital_product" }),
+  tax_category: z.string().min(1, "Tax category must be a non-empty string"),
 });
 
 export type CreateProductInput = z.infer<typeof createProductSchema>;
@@ -80,10 +78,7 @@ export interface productListResponse {
 export const productDetailsSchema = z.object({
   business_id: z.string(),
   created_at: z.string(),
-  currency: z.custom<Currency>().meta({
-    type: "string",
-    example: "USD",
-  }),
+  currency: z.string(),
   description: z.string(),
   image: z.string(),
   is_recurring: z.boolean(),
@@ -91,10 +86,7 @@ export const productDetailsSchema = z.object({
   price: z.number(),
   price_detail: z.any(),
   product_id: z.string(),
-  tax_category: z.custom<TaxCategory>().meta({
-    type: "string",
-    example: "digital_product",
-  }),
+  tax_category: z.string(),
   tax_inclusive: z.boolean(),
   updated_at: z.string(),
 });

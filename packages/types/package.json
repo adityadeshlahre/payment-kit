@@ -11,7 +11,7 @@
     "./*": "./src/*.ts"
   },
   "dependencies": {
-    "dodopayments": "^1.44.0",
-    "zod": "^4.0.14"
+    "dodopayments": "^1.49.0",
+    "zod": "^4.0.17"
   }
 }

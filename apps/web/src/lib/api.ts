@@ -4,6 +4,7 @@ import { toast } from "sonner";
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_SERVER_URL as string,
   timeout: 10000,
+  // withCredentials: true,
 });
 
 axiosInstance.interceptors.request.use(

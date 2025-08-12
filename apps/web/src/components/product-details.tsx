@@ -2,13 +2,17 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { productDetails } from "@repo/types";
+import type { singleProductDetailsReponse } from "@repo/types";
 import useCreatePaymentMutation from "@/hooks/mutation/useCreatePayment";
 import useCreateSubscriptionMutation from "@/hooks/mutation/useCreateSubscription";
 import type { CountryCode } from "dodopayments/resources/misc";
 import { authClient } from "@/lib/auth-client";
 
-export default function ProductCard({ product }: { product: productDetails }) {
+export default function ProductDetails({
+  product,
+}: {
+  product: singleProductDetailsReponse;
+}) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const createPayment = useCreatePaymentMutation();
@@ -33,7 +37,7 @@ export default function ProductCard({ product }: { product: productDetails }) {
       };
 
       const customerData = {
-        customer_id: session?.session.userId,
+        customer_id: session?.session?.userId,
       };
 
       if (is_recurring) {
@@ -76,27 +80,22 @@ export default function ProductCard({ product }: { product: productDetails }) {
         );
       }
     } else {
-      const checkoutUrl = `https://test.checkout.dodopayments.com/buy/${productId}?quantity=1&redirect_url=${process.env.NEXT_PUBLIC_SERVER_URL}`;
+      let checkoutUrl = `https://test.checkout.dodopayments.com/buy/${productId}?quantity=1&redirect_url=${process.env.NEXT_PUBLIC_SERVER_URL}`;
       router.push(checkoutUrl);
     }
   };
 
   return (
-    <div
-      className="bg-white border border-gray-200 rounded-lg shadow-lg p-6 hover:transform hover:scale-105 hover:shadow-xl transition-all duration-300"
-      onClick={() => {
-        router.push(`/product/${product.product_id}`);
-      }}
-    >
+    <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-6 hover:transform hover:scale-105 hover:shadow-xl transition-all duration-300">
       <h2 className="text-xl font-bold text-black">{product.name}</h2>
       <p className="text-gray-700 mt-2">{product.description}</p>
       <p className="text-green-600 font-semibold mt-4">
-        ${product.price / 100}
+        ${product.price.price / 100}
       </p>
       <button
         className="text-xl font-bold text-black"
         onClick={() =>
-          checkoutProduct(product.product_id, product.is_recurring, false)
+          checkoutProduct(product.product_id, product.is_recurring, true)
         }
         disabled={loading}
       >

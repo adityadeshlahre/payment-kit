@@ -14,7 +14,7 @@ app.use(
   "/*",
   cors({
     origin: process.env.CORS_ORIGIN || "",
-    allowMethods: ["GET", "POST", "OPTIONS"],
+    allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   }),
@@ -46,25 +46,6 @@ app.get(
 );
 
 app.all("/api/auth/*", (c) => auth.handler(c.req.raw));
-
-app.use("/api/*", async (c, next) => {
-  const authHeader = c.req.header("Authorization");
-  if (authHeader) {
-    try {
-      const session = await auth.api.getSession({
-        headers: c.req.raw.headers,
-      });
-
-      if (session?.user) {
-        // @ts-ignore - temporary fix for Hono context typing
-        c.set("user", session.user);
-      }
-    } catch (error) {
-      console.error("Auth middleware error:", error);
-    }
-  }
-  await next();
-});
 
 app.route("/api", appRouter);
 

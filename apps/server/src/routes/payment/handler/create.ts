@@ -4,10 +4,8 @@ import { zValidator } from "@hono/zod-validator";
 import { HTTPException } from "hono/http-exception";
 import {
   dodoPaymentCreatePaymentSchema,
-  dodoPaymentSubscriptionCreatePaymentSchema,
   errorResponseSchema,
   type DodoPaymentCreatePaymentInput,
-  type DodoPaymentSubscriptionCreatePaymentInput,
   type ProductCartItemInput,
 } from "@repo/types";
 import { dodoPaymentClient } from "@/lib/auth";
@@ -27,7 +25,6 @@ export const createOneTimePaymentHandler = factory.createHandlers(
           },
         },
       },
-
       [HttpStatus.HTTP_500_INTERNAL_SERVER_ERROR]: {
         description: "Internal server error",
         content: {

@@ -8,6 +8,9 @@ jobs:
   push_to_registry:
     name: Build and Push Docker images to Docker Hub
     runs-on: ubuntu-latest
+    env:
+      DODO_RETURN_URL: ${{ secrets.DODO_RETURN_URL }}
+      NEXT_PUBLIC_SERVER_URL: ${{ secrets.NEXT_PUBLIC_SERVER_URL }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3

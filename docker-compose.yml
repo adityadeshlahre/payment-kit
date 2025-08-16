@@ -1,4 +1,4 @@
-service:
+services:
   api:
     build:
       context: .
@@ -6,7 +6,7 @@ service:
     image: payment-kit-api:latest
     container_name: payment-kit-api
     ports:
-      - '3000:3000'
+      - "3000:3000"
     expose:
       - 3000
     environment:
@@ -21,7 +21,6 @@ service:
     expose:
       - 3001
     ports:
-      - '3001:3001'
+      - "3001:3001"
     environment:
-     - NEXT_PUBLIC_SERVER_URL=${NEXT_PUBLIC_SERVER_URL}
-
+      - NEXT_PUBLIC_SERVER_URL=${NEXT_PUBLIC_SERVER_URL}

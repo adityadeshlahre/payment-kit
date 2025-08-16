@@ -11,7 +11,7 @@ COPY packages/types/package.json ./packages/types/package.json
 COPY packages/constants/package.json ./packages/constants/package.json
 
 # Install all dependencies (needed for workspace resolution)
-RUN bun install --no-save --ignore-scripts
+RUN bun install --frozen-lockfile --no-save --ignore-scripts
 
 FROM base AS builder
 
@@ -46,7 +46,7 @@ COPY --from=builder /usr/src/app/apps/server/dist ./apps/server/dist
 COPY --from=builder /usr/src/app/apps/server/package.json ./apps/server/package.json
 
 # Install only production dependencies for the final image
-RUN bun install --no-save --ignore-scripts
+RUN bun install --production --no-save --ignore-scripts
 
 # run the app
 USER bun

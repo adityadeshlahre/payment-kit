@@ -2,15 +2,9 @@ FROM oven/bun:1 AS base
 
 FROM base AS builder
 
-ENV APK_CACHE_DIR="/app/.cache/apk" \
-	APK_SYMLINK_DIR="/etc/apk/cache" \
-	FORCE_COLOR=1
+ENV FORCE_COLOR=1
 
-RUN mkdir -p ${APK_CACHE_DIR} && \
-	ln -fns ${APK_CACHE_DIR} ${APK_SYMLINK_DIR}
-
-RUN --mount=type=cache,target=${APK_CACHE_DIR} \
-	apk update && apk upgrade && apk add libc6-compat
+RUN apt-get update && apt-get install -y --no-install-recommends libc6 && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -21,7 +15,7 @@ COPY --chmod=444 packages/constants/package.json ./packages/constants/package.js
 COPY --chmod=444 package.json bun.lock bunfig.toml turbo.json ./
 
 RUN --mount=type=cache,target=/root/bun \
-	bun install --frozen-lockfile
+	bun install --no-save --ignore-scripts
 
 
 COPY --chmod=444 packages/types ./packages/types
@@ -33,7 +27,7 @@ COPY --chmod=555 apps/web/src ./apps/web/src
 
 ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN bun run build --filter=web --frozen-lockfile
+RUN bun run build --filter=web
 
 FROM base AS runner
 WORKDIR /app
@@ -41,8 +35,8 @@ WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
-RUN addgroup --system --gid 1001 bunjs && \
-	adduser --system --uid 1001 -G bunjs nextjs
+RUN groupadd --system --gid 1001 bunjs \
+    && useradd --system --uid 1001 --gid bunjs nextjs
 
 COPY --from=builder --chown=root:root --chmod=555 /app/apps/web/public /app/apps/web/public
 

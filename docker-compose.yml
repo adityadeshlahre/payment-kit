@@ -1,0 +1,27 @@
+service:
+  api:
+    build:
+      context: .
+      dockerfile: ./apps/server/Dockerfile
+    image: payment-kit-api:latest
+    container_name: payment-kit-api
+    ports:
+      - '3000:3000'
+    expose:
+      - 3000
+    environment:
+      - DODO_RETURN_URL=${DODO_RETURN_URL}
+
+  web:
+    build:
+      context: .
+      dockerfile: ./apps/server/Dockerfile
+    image: payment-kit-web:latest
+    container_name: payment-kit-web
+    expose:
+      - 3001
+    ports:
+      - '3001:3001'
+    environment:
+     - NEXT_PUBLIC_SERVER_URL=${NEXT_PUBLIC_SERVER_URL}
+

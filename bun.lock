@@ -82,6 +82,7 @@
       "name": "web",
       "version": "0.1.0",
       "dependencies": {
+        "@dodopayments/better-auth": "^1.1.1",
         "@opennextjs/cloudflare": "^1.6.5",
         "@repo/constants": "workspace:*",
         "@repo/types": "workspace:*",

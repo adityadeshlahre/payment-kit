@@ -5,10 +5,10 @@ WORKDIR /usr/src/app
 FROM base AS deps
 
 # Copy workspace configuration files
-COPY package.json bun.lock bunfig.toml turbo.json ./
 COPY apps/server/package.json ./apps/server/package.json
 COPY packages/types/package.json ./packages/types/package.json
 COPY packages/constants/package.json ./packages/constants/package.json
+COPY package.json bun.lock bunfig.toml turbo.json ./
 
 # Install all dependencies (needed for workspace resolution)
 RUN bun install --no-save --ignore-scripts
@@ -19,8 +19,8 @@ FROM base AS builder
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY --from=deps /usr/src/app/package.json ./package.json
 COPY --from=deps /usr/src/app/turbo.json ./turbo.json
-COPY --from=deps /usr/src/app/bun.lock ./bun.lock
 COPY --from=deps /usr/src/app/bunfig.toml ./bunfig.toml
+COPY --from=deps /usr/src/app/bun.lock ./bun.lock
 
 # Copy all source code
 COPY apps/server ./apps/server
@@ -35,8 +35,8 @@ FROM base AS runner
 # Copy workspace files needed for runtime
 COPY --from=deps /usr/src/app/package.json ./package.json
 COPY --from=deps /usr/src/app/turbo.json ./turbo.json
-COPY --from=deps /usr/src/app/bun.lock ./bun.lock
 COPY --from=deps /usr/src/app/bunfig.toml ./bunfig.toml
+COPY --from=deps /usr/src/app/bun.lock ./bun.lock
 
 # Copy built packages (needed by server)
 COPY --from=builder /usr/src/app/packages ./packages

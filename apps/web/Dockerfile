@@ -14,11 +14,11 @@ RUN --mount=type=cache,target=${APK_CACHE_DIR} \
 
 WORKDIR /app
 
-COPY --chmod=444 package.json bun.lock bunfig.toml turbo.json ./
-
 COPY --chmod=444 apps/web/package.json ./apps/web/package.json
 COPY --chmod=444 packages/types/package.json ./packages/types/package.json
 COPY --chmod=444 packages/constants/package.json ./packages/constants/package.json
+
+COPY --chmod=444 package.json bun.lock bunfig.toml turbo.json ./
 
 RUN --mount=type=cache,target=/root/bun \
 	bun install --frozen-lockfile

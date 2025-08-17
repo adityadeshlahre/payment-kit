@@ -35,18 +35,19 @@ WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
-RUN groupadd --system --gid 1001 bunjs \
-    && useradd --system --uid 1001 --gid bunjs nextjs
+RUN groupadd --system --gid 1001 bunjs
 
-COPY --from=builder --chown=root:root --chmod=555 /app/apps/web/public /app/apps/web/public
+RUN useradd --system --uid 1001 --gid bunjs nextjs
 
-COPY --from=builder --chown=root:root --chmod=555 /app/apps/web/.next/standalone /app/
+COPY --from=builder --chown=nextjs:bunjs --chmod=755 /app/apps/web/.next/standalone ./
+
+COPY --from=builder --chown=nextjs:bunjs --chmod=755 /app/apps/web/.next/static ./apps/web/.next/static
+
+COPY --from=builder --chown=nextjs:bunjs --chmod=755 /app/apps/web/public ./apps/web/public
 
 RUN mkdir -p /app/apps/web/.next/cache \
-	&& chown -R nextjs:bunjs /app/apps/web/.next/cache \
-	&& chmod -R 755 /app/apps/web/.next/cache
-
-COPY --from=builder --chown=root:root --chmod=555 /app/apps/web/.next/static /app/apps/web/.next/static
+&& chown -R nextjs:bunjs /app/apps/web/.next/cache \
+&& chmod -R 755 /app/apps/web/.next/cache
 
 USER nextjs
 

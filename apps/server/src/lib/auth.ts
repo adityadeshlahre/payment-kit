@@ -52,9 +52,7 @@ const createAuth = () =>
       admin(),
       expo(),
       dodoSessionPlugin(),
-      openAPI({
-        path: "/docs",
-      }),
+      openAPI(),
       dodopayments({
         client: dodoPaymentClient,
         createCustomerOnSignUp: true,

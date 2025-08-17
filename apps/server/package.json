@@ -24,7 +24,7 @@
     "dodopayments": "^1.49.0",
     "dotenv": "^17.2.1",
     "drizzle-orm": "^0.44.4",
-    "hono": "^4.9.1",
+    "hono": "^4.9.2",
     "hono-openapi": "^0.4.8",
     "pg": "^8.16.3",
     "resend": "^6.0.1",

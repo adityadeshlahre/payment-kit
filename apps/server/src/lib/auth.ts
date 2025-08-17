@@ -11,7 +11,6 @@ import { expo } from "@better-auth/expo";
 import { db } from "../db";
 import * as schema from "../db/schema/auth";
 import { admin, openAPI } from "better-auth/plugins";
-import { dodoSessionPlugin } from "./dodo-session-plugin";
 
 export const dodoPaymentClient = new DodoPayments({
   bearerToken:
@@ -51,7 +50,6 @@ const createAuth = () =>
     plugins: [
       admin(),
       expo(),
-      dodoSessionPlugin(),
       openAPI(),
       dodopayments({
         client: dodoPaymentClient,

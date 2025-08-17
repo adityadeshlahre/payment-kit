@@ -70,6 +70,8 @@ export const getCustomerListUsingDodoPaymentClientHandler =
 		zValidator("query", customerFetchViaEmailSchema),
 		validator("query", customerFetchViaEmailSchema),
 		async (c) => {
+			console.log(c.req.valid("query"));
+
 			try {
 				const customersData = await dodoPaymentClient.customers.list({
 					email: c.req.valid("query")?.email,

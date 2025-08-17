@@ -4,4 +4,5 @@ export * from "./products/product";
 export * from "./errors/status-error";
 export * from "./customers/customer-id-details";
 export * from "./emails/email";
-export * from "./session/extended-session";
+export * from "./carts/cartState";
+export * from "./user/authState";

@@ -3,6 +3,7 @@ import factory from "@/lib/factory";
 import { zValidator } from "@hono/zod-validator";
 import { HTTPException } from "hono/http-exception";
 import {
+  DodoPaymentCreatePaymentResponseSchema,
   dodoPaymentCreatePaymentSchema,
   errorResponseSchema,
   type DodoPaymentCreatePaymentInput,
@@ -21,7 +22,7 @@ export const createOneTimePaymentHandler = factory.createHandlers(
         description: "One Time Payment created successfully",
         content: {
           "application/json": {
-            schema: resolver(dodoPaymentCreatePaymentSchema),
+            schema: resolver(DodoPaymentCreatePaymentResponseSchema),
           },
         },
       },
@@ -55,11 +56,13 @@ export const createOneTimePaymentHandler = factory.createHandlers(
           product_id: item.product_id,
           quantity: item.quantity,
         })),
+        payment_link: input.payment_link,
+        return_url: `${process.env.BETTER_AUTH_URL}/dashboard/success`,
       });
-
-      return c.json(paymentData, {
-        status: HttpStatus.HTTP_201_CREATED,
-      });
+      return c.json(
+        paymentData,
+        HttpStatus.HTTP_201_CREATED,
+      );
     } catch (error) {
       console.error("Error creating payment:", error);
       throw new HTTPException(HttpStatus.HTTP_500_INTERNAL_SERVER_ERROR, {

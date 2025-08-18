@@ -7,6 +7,7 @@ import useCreatePaymentMutation from "@/hooks/mutation/useCreatePayment";
 import useCreateSubscriptionMutation from "@/hooks/mutation/useCreateSubscription";
 import type { CountryCode } from "dodopayments/resources/misc";
 import { authClient } from "@/lib/auth-client";
+import { useCustomer } from "@/hooks/query/useCustomer";
 
 export default function ProductDetails({
   product,
@@ -18,6 +19,9 @@ export default function ProductDetails({
   const createPayment = useCreatePaymentMutation();
   const createSubscription = useCreateSubscriptionMutation();
   const { data: session, isPending } = authClient.useSession();
+  const { data: customerDataAsList } = useCustomer({
+    customerEmail: session?.user.email,
+  });
 
   const checkoutProduct = async (
     productId: string,
@@ -37,7 +41,7 @@ export default function ProductDetails({
       };
 
       const customerData = {
-        customer_id: session?.session?.userId,
+        customer_id: customerDataAsList?.items[0]?.customer_id as string,
       };
 
       if (is_recurring) {
@@ -68,6 +72,7 @@ export default function ProductDetails({
                 quantity: 1,
               },
             ],
+            payment_link: true,
           },
           {
             onSuccess: (data) => {
@@ -79,10 +84,11 @@ export default function ProductDetails({
           },
         );
       }
-    } else {
-      let checkoutUrl = `https://test.checkout.dodopayments.com/buy/${productId}?quantity=1&redirect_url=${process.env.NEXT_PUBLIC_SERVER_URL}`;
-      router.push(checkoutUrl);
     }
+    // else {
+    //     let checkoutUrl = `https://test.checkout.dodopayments.com/buy/${productId}?quantity=1&redirect_url=${process.env.NEXT_PUBLIC_SERVER_URL}`;
+    //     router.push(checkoutUrl);
+    //   }
   };
 
   return (

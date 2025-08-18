@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useCustomersList } from "@/hooks/query/useCustomer";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -10,51 +11,7 @@ import { useEffect, useState } from "react";
 export default function List() {
   const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
-  const [customerData, setCustomerData] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchCustomerData = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-
-        const response = await fetch("http://localhost:3000/api/customer", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session?.session?.token}`,
-          },
-        });
-
-        const data = await response.json();
-        console.log("Customer data:", data);
-
-        if (!response.ok) {
-          console.error("API Error:", response.status, data);
-          setError(
-            `API Error: ${response.status} - ${data.message || "Unknown error"}`
-          );
-        } else {
-          setCustomerData(data);
-        }
-      } catch (error) {
-        console.error("Fetch error:", error);
-        setError(
-          `Fetch error: ${
-            error instanceof Error ? error.message : "Unknown error"
-          }`
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (session?.session?.token) {
-      fetchCustomerData();
-    }
-  }, [session]);
+  const { data: response, isLoading, isError } = useCustomersList();
 
   if (isPending) {
     return <Skeleton className="h-9 w-24" />;

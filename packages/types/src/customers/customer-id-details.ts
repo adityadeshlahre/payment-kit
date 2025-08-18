@@ -65,6 +65,16 @@ export type CustomerFetchViaEmailInput = z.infer<
   typeof customerFetchViaEmailSchema
 >;
 
+export type userEnvForMiddlware = {
+	id: string;
+	email: string;
+	emailVerified: boolean;
+	name: string;
+	image: string | null;
+	createdAt: string;
+	updatedAt: string;
+}
+
 export interface loginViEmailReponse {
   id: string;
   email: string;

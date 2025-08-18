@@ -19,25 +19,28 @@ export const useCustomersList = () => {
   return query;
 };
 
-export const useCustomer = () => {
-  const customerEmail = "user@gmail.com"; // <-- set or import dynamically
-  const page_size = 10;
-  const page_number = 1;
-
-  const handleFetchCustomer = async (
-    email: string,
-    size: number,
-    number: number,
-  ): Promise<customerListResponse> => {
+export const useCustomer = (params?: {
+  customerEmail?: string;
+  page_size?: number;
+  page_number?: number;
+}) => {
+  const handleFetchCustomer = async (): Promise<customerListResponse> => {
+    const queryParams = new URLSearchParams();
+    if (params?.customerEmail)
+      queryParams.append("email", params.customerEmail);
+    if (params?.page_size)
+      queryParams.append("page_size", String(params.page_size));
+    if (params?.page_number)
+      queryParams.append("page_number", String(params.page_number));
     const response = await axiosInstance.get(
-      `/api/customer?email=${email}&page_size=${size}&page_number=${number}`,
+      `/api/customer?${queryParams.toString()}`,
     );
     return response.data;
   };
 
   const query = useQuery({
-    queryKey: ["customer", customerEmail, page_size, page_number],
-    queryFn: () => handleFetchCustomer(customerEmail, page_size, page_number),
+    queryKey: ["customer", params],
+    queryFn: () => handleFetchCustomer(),
     staleTime: 5000,
     retry: 3,
   });

@@ -31,6 +31,7 @@ export const dodoPaymentCreatePaymentSchema = z.object({
   billing: BillingAddressSchema,
   customer: AttachExistingCustomerSchema,
   product_cart: z.array(ProductCartItemSchema),
+  payment_link: z.boolean().default(true),
 });
 
 export const dodoPaymentSubscriptionCreatePaymentSchema = z.object({
@@ -51,18 +52,6 @@ export type ProductCartItemInput = z.infer<typeof ProductCartItemSchema>;
 export type DodoPaymentCreatePaymentInput = z.infer<
   typeof dodoPaymentCreatePaymentSchema
 >;
-
-export interface DodoPaymentCreatePaymentResponse {
-  client_secret: string;
-  customer: Customer;
-  discount_id: string;
-  expires_on: string;
-  metadata: Metadata;
-  payment_id: string;
-  payment_link: string;
-  product_cart: ProductCart[];
-  total_amount: number;
-}
 
 export const CustomerSchema = z.object({
   customer_id: z.string(),
@@ -87,30 +76,6 @@ export const ProductCartSchema = z.object({
   product_id: z.string(),
   quantity: z.number(),
 });
-
-export interface ProductCart {
-  amount?: number;
-  product_id: string;
-  quantity: number;
-}
-
-export type DodoPaymentSubscriptionCreatePaymentInput = z.infer<
-  typeof dodoPaymentSubscriptionCreatePaymentSchema
->;
-
-export interface DodoPaymentSubscriptionCreatePaymentResponse {
-  addons: Addon[];
-  client_secret: string;
-  customer: Customer;
-  discount_id: string;
-  expires_on: string;
-  metadata: Metadata;
-  payment_id: string;
-  payment_link: string;
-  recurring_pre_tax_amount: number;
-  subscription_id: string;
-}
-
 export const AddonSchema = z.object({
   addon_id: z.string(),
   quantity: z.number().min(1, "Quantity must be at least 1"),
@@ -125,4 +90,56 @@ export interface Customer {
   customer_id: string;
   email: string;
   name: string;
+}
+
+export interface ProductCart {
+  amount?: number;
+  product_id: string;
+  quantity: number;
+}
+
+export const DodoPaymentCreatePaymentResponseSchema = z.object({
+  client_secret: z.string(),
+  customer: CustomerSchema,
+  discount_id: z.string(),
+  expires_on: z.string(),
+  metadata: MetadataSchema,
+  payment_id: z.string(),
+  payment_link: z.string(),
+  product_cart: ProductCartSchema.array(),
+  total_amount: z.number(),
+});
+
+export type DodoPaymentCreatePaymentResponse = z.infer<
+  typeof DodoPaymentCreatePaymentResponseSchema
+>;
+
+export type DodoPaymentSubscriptionCreatePaymentInput = z.infer<
+  typeof dodoPaymentSubscriptionCreatePaymentSchema
+>;
+
+export const DodoPaymentSubscriptionCreatePaymentResponseSchema = z.object({
+  addons: z.array(AddonSchema),
+  client_secret: z.string(),
+  customer: CustomerSchema,
+  discount_id: z.string(),
+  expires_on: z.string(),
+  metadata: MetadataSchema,
+  payment_id: z.string(),
+  payment_link: z.string(),
+  recurring_pre_tax_amount: z.number(),
+  subscription_id: z.string(),
+});
+
+export interface DodoPaymentSubscriptionCreatePaymentResponse {
+  addons: Addon[];
+  client_secret: string;
+  customer: Customer;
+  discount_id: string;
+  expires_on: string;
+  metadata: Metadata;
+  payment_id: string;
+  payment_link: string;
+  recurring_pre_tax_amount: number;
+  subscription_id: string;
 }

@@ -52,6 +52,7 @@ export const createSubscriptionPaymentHandler = factory.createHandlers(
         customer: {
           customer_id: input.customer.customer_id,
         },
+        payment_link: true,
         product_id: input.product_id,
         quantity: input.quantity,
       });

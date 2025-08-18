@@ -43,9 +43,21 @@ COPY --from=builder --chown=nextjs:bunjs --chmod=755 /app/apps/web/.next/standal
 
 COPY --from=builder --chown=nextjs:bunjs --chmod=755 /app/apps/web/.next/static ./apps/web/.next/static
 
+COPY --from=builder --chown=nextjs:bunjs --chmod=755 /app/apps/web/.next/static ./apps/web/.next/standalone/.next/static
+
 COPY --from=builder --chown=nextjs:bunjs --chmod=755 /app/apps/web/public ./apps/web/public
 
-COPY --from=builder --chown=nextjs:bunjs --chmod=755 /app/apps/web/.next/static ./apps/web/public/_next/static
+COPY --from=builder --chown=nextjs:bunjs --chmod=755 /app/apps/web/.next/server ./apps/web/.next/server
+
+COPY --from=builder --chown=nextjs:bunjs --chmod=755 /app/apps/web/.next/cache ./apps/web/.next/cache
+
+COPY --from=builder --chown=nextjs:bunjs --chmod=755 /app/apps/web/.next/server ./apps/web/.next/standalone/server
+
+COPY --from=builder --chown=nextjs:bunjs --chmod=755 /app/apps/web/.next/cache ./apps/web/.next/standalone/cache
+
+COPY --from=builder --chown=nextjs:bunjs --chmod=755 /app/apps/web/.next/static ./apps/web/_next/static
+
+COPY --from=builder --chown=nextjs:bunjs --chmod=755 /app/apps/web/.next ./apps/web/_next/
 
 RUN mkdir -p /app/apps/web/.next/cache \
 	&& chown -R nextjs:bunjs /app/apps/web/.next/cache \

@@ -14,7 +14,7 @@ const api = new Hono()
 	.route("/product", product)
 	.route("/customer", customer)
 	.route("/email", email)
-	.route("/webhook", webhook)
+	.route("/webhook", webhook);
 
 export const appRouter = api;
 export type AppRouter = typeof appRouter;

@@ -16,7 +16,9 @@ app.use(
     origin: process.env.CORS_ORIGIN || "",
     allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
+    exposeHeaders: ["Content-Length"],
     credentials: true,
+    maxAge: 600,
   }),
 );
 app.get(
@@ -45,7 +47,7 @@ app.get(
   }),
 );
 
-app.all("/api/auth/*", (c) => auth.handler(c.req.raw));
+app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
 
 app.route("/api", appRouter);
 

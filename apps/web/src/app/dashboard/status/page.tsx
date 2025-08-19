@@ -1,15 +1,27 @@
 "use client";
 
 import { usePayment } from "@/hooks/query/usePayment";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import type { IntentStatus } from "dodopayments/resources/payments";
 import { VALID_STATUSES } from "@repo/types";
+import { useEffect } from "react";
 
 export default function Status() {
   const queryParams = useSearchParams();
+  const router = useRouter();
   const paymentId = queryParams.get("payment_id");
   const status = queryParams.get("status");
   const { data: paymentData, isLoading, error } = usePayment(paymentId ?? "");
+
+  useEffect(() => {
+    if (
+      !paymentId ||
+      !status ||
+      !VALID_STATUSES.includes(status as IntentStatus)
+    ) {
+      router.push("/");
+    }
+  }, [paymentId, status, router]);
 
   if (!paymentId) {
     return (
@@ -36,11 +48,9 @@ export default function Status() {
   return (
     <div className="flex h-screen items-center justify-center">
       <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">{status}</h1>
-        {/* <p className="text-lg">Your action was successful.</p> */}
+        <h1 className="text-4xl font-bold mb-4">{paymentData?.status}</h1>
+        <p className="text-md">{paymentData?.updated_at}</p>
       </div>
-
-      <div>{paymentData?.status}</div>
     </div>
   );
 }

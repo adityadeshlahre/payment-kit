@@ -88,7 +88,7 @@ export default function ProductCard({ product }: { product: productDetails }) {
 
   return (
     <div
-      className="bg-white border border-gray-200 rounded-lg shadow-lg p-6 hover:transform hover:scale-105 hover:shadow-xl transition-all duration-300"
+      className="bg-white border border-gray-200 rounded-lg shadow-lg p-6"
       onClick={() => {
         router.push(`/product/${product.product_id}`);
       }}

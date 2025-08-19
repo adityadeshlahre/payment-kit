@@ -49,10 +49,6 @@ export const useCustomer = (params?: {
 };
 
 export const useCustomerById = (customerId: string) => {
-  if (!customerId) {
-    throw new Error("Customer ID is required");
-  }
-
   const handlerFetchCustomerById = async (): Promise<customerListResponse> => {
     const response = await axiosInstance.get(`/api/customer/${customerId}`);
     return response.data;

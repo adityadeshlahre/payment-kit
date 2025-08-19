@@ -3,9 +3,6 @@ import type { PaymentIdDetailsResponse } from "@repo/types";
 import { useQuery } from "@tanstack/react-query";
 
 export const usePayment = (paymentId: string) => {
-  if (!paymentId) {
-    throw new Error("Payment ID is required");
-  }
   const handleFetchPayment = async (): Promise<PaymentIdDetailsResponse> => {
     const response = await axiosInstance(`/api/payment/${paymentId}`);
     return response.data;

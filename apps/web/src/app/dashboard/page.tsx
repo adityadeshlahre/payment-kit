@@ -1,14 +1,19 @@
 "use client";
 import { authClient } from "@/lib/auth-client";
-import SyncDodoCustomerButton from "@/components/sync-dodo-customer-button";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useCustomer } from "@/hooks/query/useCustomer";
+import { useUserStore } from "@/store/user";
+import type { CustomerDetails, loginViEmailReponse } from "@repo/types";
 
 export default function Dashboard() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session, isPending } = authClient.useSession();
+  const setUser = useUserStore((state) => state.login);
+  const setDodoCustomerDetails = useUserStore(
+    (state) => state.setDodoCustomerDetails,
+  );
   const email = session?.user.email;
   const page_size = searchParams.get("page_size")
     ? Number.parseInt(searchParams.get("page_size")!, 10)
@@ -25,7 +30,30 @@ export default function Dashboard() {
     if (!session && !isPending) {
       router.push("/login");
     }
-  }, [session, isPending]);
+
+    if (session?.user) {
+      const userForStore: loginViEmailReponse = {
+        id: session.user.id,
+        email: session.user.email,
+        name: session.user.name,
+        image: session.user.image || "",
+        emailVerified: session.user.emailVerified,
+        createdAt: session.user.createdAt.toISOString(),
+        updatedAt: session.user.updatedAt.toISOString(),
+      };
+      setUser(userForStore);
+    }
+    if (customerData?.items && customerData.items.length > 0) {
+      setDodoCustomerDetails(customerData.items[0] as CustomerDetails);
+    }
+  }, [
+    session,
+    isPending,
+    customerData,
+    setUser,
+    setDodoCustomerDetails,
+    router,
+  ]);
 
   if (isPending) {
     return <div>Loading...</div>;

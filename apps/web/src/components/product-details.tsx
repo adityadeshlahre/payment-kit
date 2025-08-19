@@ -92,7 +92,7 @@ export default function ProductDetails({
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-6 hover:transform hover:scale-105 hover:shadow-xl transition-all duration-300">
+    <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-6">
       <h2 className="text-xl font-bold text-black">{product.name}</h2>
       <p className="text-gray-700 mt-2">{product.description}</p>
       <p className="text-green-600 font-semibold mt-4">

@@ -6,3 +6,4 @@ export * from "./customers/customer-id-details";
 export * from "./emails/email";
 export * from "./carts/cartState";
 export * from "./user/authState";
+export * from "./payments/status";

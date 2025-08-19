@@ -57,12 +57,9 @@ export const createOneTimePaymentHandler = factory.createHandlers(
           quantity: item.quantity,
         })),
         payment_link: input.payment_link,
-        return_url: `${process.env.BETTER_AUTH_URL}/dashboard/success`,
+        return_url: `${process.env.BETTER_AUTH_URL}/dashboard/status`,
       });
-      return c.json(
-        paymentData,
-        HttpStatus.HTTP_201_CREATED,
-      );
+      return c.json(paymentData, HttpStatus.HTTP_201_CREATED);
     } catch (error) {
       console.error("Error creating payment:", error);
       throw new HTTPException(HttpStatus.HTTP_500_INTERNAL_SERVER_ERROR, {

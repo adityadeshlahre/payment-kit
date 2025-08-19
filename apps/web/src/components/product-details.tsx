@@ -72,7 +72,6 @@ export default function ProductDetails({
                 quantity: 1,
               },
             ],
-            payment_link: true,
           },
           {
             onSuccess: (data) => {

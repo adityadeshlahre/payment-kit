@@ -15,7 +15,9 @@ export const useUserStore = create<UserAuthState>((set) => ({
     createdAt: "",
     updatedAt: "",
   },
+
   login: (user: loginViEmailReponse) => set({ user: user }),
+
   logout: () =>
     set({
       user: {
@@ -37,6 +39,7 @@ export const useUserStore = create<UserAuthState>((set) => ({
     name: "",
     phone_number: "",
   } as CustomerDetails,
+
   setDodoCustomerDetails: (details: CustomerDetails) =>
     set({
       dodoCusomerDetails: {
@@ -46,6 +49,18 @@ export const useUserStore = create<UserAuthState>((set) => ({
         email: details.email,
         name: details.name,
         phone_number: details.phone_number || "",
+      },
+    }),
+
+  clearDodoCustomerDetails: () =>
+    set({
+      dodoCusomerDetails: {
+        business_id: "",
+        created_at: "",
+        customer_id: "",
+        email: "",
+        name: "",
+        phone_number: "",
       },
     }),
 }));

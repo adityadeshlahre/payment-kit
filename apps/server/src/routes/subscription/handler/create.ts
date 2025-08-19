@@ -53,6 +53,7 @@ export const createSubscriptionPaymentHandler = factory.createHandlers(
           customer_id: input.customer.customer_id,
         },
         payment_link: true,
+        return_url: `${process.env.BETTER_AUTH_URL}/dashboard/status`,
         product_id: input.product_id,
         quantity: input.quantity,
       });

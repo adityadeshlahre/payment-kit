@@ -9,4 +9,5 @@ export interface UserAuthState {
 	login: (user: loginViEmailReponse) => void;
 	logout: () => void;
 	setDodoCustomerDetails: (details: CustomerDetails) => void;
+	clearDodoCustomerDetails: () => void;
 }

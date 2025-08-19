@@ -31,7 +31,6 @@ export const dodoPaymentCreatePaymentSchema = z.object({
   billing: BillingAddressSchema,
   customer: AttachExistingCustomerSchema,
   product_cart: z.array(ProductCartItemSchema),
-  payment_link: z.boolean().default(true),
 });
 
 export const dodoPaymentSubscriptionCreatePaymentSchema = z.object({

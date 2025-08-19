@@ -56,7 +56,7 @@ export const createOneTimePaymentHandler = factory.createHandlers(
           product_id: item.product_id,
           quantity: item.quantity,
         })),
-        payment_link: input.payment_link,
+        payment_link: true,
         return_url: `${process.env.BETTER_AUTH_URL}/dashboard/status`,
       });
       return c.json(paymentData, HttpStatus.HTTP_201_CREATED);

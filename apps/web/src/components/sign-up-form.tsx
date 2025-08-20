@@ -32,8 +32,8 @@ export default function SignUpForm({
         },
         {
           onSuccess: () => {
-            router.push("/dashboard");
-            toast.success("Sign up successful");
+            toast.success("Account created! Please check your email for a verification link.");
+            onSwitchToSignIn();
           },
           onError: (error) => {
             toast.error(error.error.message || error.error.statusText);

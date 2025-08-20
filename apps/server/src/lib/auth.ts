@@ -1,3 +1,4 @@
+import { render } from "@react-email/render";
 import { betterAuth } from "better-auth";
 import {
   dodopayments,
@@ -11,6 +12,11 @@ import { expo } from "@better-auth/expo";
 import { db } from "../db";
 import * as schema from "../db/schema/auth";
 import { admin, openAPI } from "better-auth/plugins";
+import { resend } from "./resend";
+import {
+  ResetPasswordTemplate,
+  VerifyEmailTemplate,
+} from "@/routes/email/templates/template";
 
 export const dodoPaymentClient = new DodoPayments({
   bearerToken:
@@ -37,6 +43,66 @@ const createAuth = () =>
     trustedOrigins: [process.env.CORS_ORIGIN || "", "my-better-t-app://"],
     emailAndPassword: {
       enabled: true,
+      requireEmailVerification: true,
+      sendResetPassword: async ({ url, user }) => {
+        try {
+          const { data, error } = await resend.emails.send({
+            from: `${process.env.FROM_NAME} <${process.env.FROM_EMAIL}>`,
+            to: user.email,
+            subject: "Reset Your Password",
+            html: await render(
+              ResetPasswordTemplate({
+                url,
+                fromMail: process.env.FROM_EMAIL!,
+                fromName: process.env.FROM_NAME!,
+                userEmail: user.email,
+              }),
+            ),
+          });
+
+          if (error) {
+            console.error("Failed to send reset password email:", error);
+            throw new Error("Failed to send reset password email");
+          }
+
+          console.log("Reset password email sent successfully:", data?.id);
+        } catch (error) {
+          console.error("Error sending reset password email:", error);
+          throw error;
+        }
+      },
+    },
+    emailVerification: {
+      sendVerificationEmail: async ({ url, user }) => {
+        try {
+          const { data, error } = await resend.emails.send({
+            from: `${process.env.FROM_NAME} <${process.env.FROM_EMAIL}>`,
+            to: user.email,
+            subject: "Verify Your Email Address",
+            html: await render(
+              VerifyEmailTemplate({
+                url,
+                fromMail: process.env.FROM_EMAIL!,
+                fromName: process.env.FROM_NAME!,
+                userEmail: user.email,
+              }),
+            ),
+          });
+
+          if (error) {
+            console.error("Failed to send verification email:", error);
+            throw new Error("Failed to send verification email");
+          }
+
+          console.log("Verification email sent successfully:", data?.id);
+        } catch (error) {
+          console.error("Error sending verification email:", error);
+          throw error;
+        }
+      },
+      sendOnSignUp: true,
+      autoSignInAfterVerification: true,
+      expiresIn: 1800,
     },
     secret: process.env.BETTER_AUTH_SECRET as string,
     baseURL: process.env.BETTER_AUTH_URL as string,
@@ -68,8 +134,11 @@ const createAuth = () =>
           portal(),
           webhooks({
             webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_SECRET as string,
-            onPayload: async (payload) => {
-              console.log("Received webhook:", payload.event_type);
+            onPayload: async (payload: any) => {
+              console.log(
+                "Received webhook:",
+                payload?.event_type || "unknown",
+              );
             },
           }),
         ],

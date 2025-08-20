@@ -16,8 +16,23 @@ export const emailSchema = z.object({
 });
 
 export const emailResponseSchema = z.object({
-  data: z.any(),
+  data: z.object({
+    id: z.string(),
+  }),
   status: z.object({
     message: z.string(),
   }),
 });
+
+export type emailSchemaType = z.infer<typeof emailSchema>;
+
+export interface emailReponseInterface {
+  data: {
+    id: string;
+  };
+  status: {
+    message: string;
+  };
+}
+
+export type emailReponseType = z.infer<typeof emailResponseSchema>;

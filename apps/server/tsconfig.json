@@ -19,7 +19,7 @@
     "composite": true,
     "jsx": "react-jsx",
     "allowImportingTsExtensions": true,
-    "jsxImportSource": "hono/jsx"
+    "jsxImportSource": "react"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

@@ -50,14 +50,12 @@ const createAuth = () =>
             from: `${process.env.FROM_NAME} <${process.env.FROM_EMAIL}>`,
             to: user.email,
             subject: "Reset Your Password",
-            html: await render(
-              ResetPasswordTemplate({
-                url,
-                fromMail: process.env.FROM_EMAIL!,
-                fromName: process.env.FROM_NAME!,
-                userEmail: user.email,
-              }),
-            ),
+            react: ResetPasswordTemplate({
+              url,
+              fromMail: process.env.FROM_EMAIL!,
+              fromName: process.env.FROM_NAME!,
+              userEmail: user.email,
+            }),
           });
 
           if (error) {
@@ -79,14 +77,12 @@ const createAuth = () =>
             from: `${process.env.FROM_NAME} <${process.env.FROM_EMAIL}>`,
             to: user.email,
             subject: "Verify Your Email Address",
-            html: await render(
-              VerifyEmailTemplate({
-                url,
-                fromMail: process.env.FROM_EMAIL!,
-                fromName: process.env.FROM_NAME!,
-                userEmail: user.email,
-              }),
-            ),
+            react: VerifyEmailTemplate({
+              url,
+              fromMail: process.env.FROM_EMAIL!,
+              fromName: process.env.FROM_NAME!,
+              userEmail: user.email,
+            }),
           });
 
           if (error) {
@@ -103,6 +99,7 @@ const createAuth = () =>
       sendOnSignUp: true,
       autoSignInAfterVerification: true,
       expiresIn: 1800,
+      callbackURL: `${process.env.BETTER_AUTH_URL}/verify-email`,
     },
     secret: process.env.BETTER_AUTH_SECRET as string,
     baseURL: process.env.BETTER_AUTH_URL as string,

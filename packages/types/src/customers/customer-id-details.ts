@@ -17,6 +17,10 @@ export const customerIdDetailsResponseSchema = z.object({
   phone_number: z.string(),
 });
 
+export type CustomerIdDetailsResponse = z.infer<
+  typeof customerIdDetailsResponseSchema
+>;
+
 export type CustomerIdDetailsInput = z.infer<typeof customerIdDetailsSchema>;
 
 export interface customerListResponse {
@@ -29,7 +33,7 @@ export const createNewCustomerSchema = z.object({
   phone_number: z.string().optional(),
 });
 
-export type CreateNewCustomerResponse = z.infer<typeof createNewCustomerSchema>;
+export type CreateNewCustomerInput = z.infer<typeof createNewCustomerSchema>;
 
 export const customerDetailsSchema = z.object({
   business_id: z.string(),
@@ -66,14 +70,14 @@ export type CustomerFetchViaEmailInput = z.infer<
 >;
 
 export type userEnvForMiddlware = {
-	id: string;
-	email: string;
-	emailVerified: boolean;
-	name: string;
-	image: string | null;
-	createdAt: string;
-	updatedAt: string;
-}
+  id: string;
+  email: string;
+  emailVerified: boolean;
+  name: string;
+  image: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
 
 export interface loginViEmailReponse {
   id: string;

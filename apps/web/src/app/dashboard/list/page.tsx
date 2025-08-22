@@ -10,14 +10,13 @@ import { useEffect, useState } from "react";
 
 export default function List() {
   const router = useRouter();
-  const { data: session, isPending } = authClient.useSession();
   const { data: customerData, isLoading, error } = useCustomersList();
 
-  if (isPending) {
+  if (isLoading) {
     return <Skeleton className="h-9 w-24" />;
   }
 
-  if (!session) {
+  if (!customerData) {
     return (
       <Button variant="outline" asChild>
         <Link href="/login">Sign In</Link>

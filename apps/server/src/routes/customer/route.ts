@@ -6,7 +6,7 @@ import { enforceUserOrAdminAuth } from "@/middleware/user-or-admin";
 import { createNewCustomerOnDodopayments } from "./handler/create";
 
 const customer = new Hono()
-  .get("/", ...getCustomerListUsingDodoPaymentClientHandler)
+  .get("/",enforceUserOrAdminAuth, ...getCustomerListUsingDodoPaymentClientHandler)
   .get("/:id", enforceUserOrAdminAuth, ...getCustomerDetailsWithIdHandler)
   .post("/", enforceUserOrAdminAuth, ...createNewCustomerOnDodopayments)
   .patch("/:id", enforceUserOrAdminAuth, ...patchCustomerDetailsWithIdHandler);

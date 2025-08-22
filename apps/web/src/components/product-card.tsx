@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { productDetails } from "@repo/types";
+import type { CustomerDetails, productDetails } from "@repo/types";
 import useCreatePaymentMutation from "@/hooks/mutation/useCreatePayment";
 import useCreateSubscriptionMutation from "@/hooks/mutation/useCreateSubscription";
 import type { CountryCode } from "dodopayments/resources/misc";
 import { authClient } from "@/lib/auth-client";
 import { useCustomer } from "@/hooks/query/useCustomer";
+import useCustomerCreateNewCustomerDodo from "@/hooks/mutation/useCustomer";
+import { useUserStore } from "@/store/user";
 
 export default function ProductCard({ product }: { product: productDetails }) {
   const [loading, setLoading] = useState(false);
@@ -15,15 +17,25 @@ export default function ProductCard({ product }: { product: productDetails }) {
   const createPayment = useCreatePaymentMutation();
   const createSubscription = useCreateSubscriptionMutation();
   const { data: session, isPending } = authClient.useSession();
-  const { data: customerDataAsList } = useCustomer({
-    customerEmail: session?.user.email,
-  });
+  const createNewCustomerDodo = useCustomerCreateNewCustomerDodo();
+  const customer_id = useUserStore(
+    (state) => state.dodoCusomerDetails.customer_id,
+  );
+  const user = useUserStore((state) => state.user);
 
   const checkoutProduct = async (
     productId: string,
     is_recurring: boolean,
     useDynamicPaymentLinks: boolean,
   ) => {
+    if (customer_id === "") {
+      if (loading) return;
+      setLoading(true);
+      const response = await createNewCustomerDodo.mutateAsync({
+        email: user.email,
+        name: user.name,
+      });
+    }
     if (useDynamicPaymentLinks && !isPending && session) {
       if (loading) return;
       setLoading(true);
@@ -32,19 +44,17 @@ export default function ProductCard({ product }: { product: productDetails }) {
         city: "Mumbai",
         country: "IN" as CountryCode,
         state: "MH",
-        street: "123 Example Street",
+        street: "123 Kampala Street",
         zipcode: "400001",
-      };
-
-      const customerData = {
-        customer_id: customerDataAsList?.items[0]?.customer_id as string,
       };
 
       if (is_recurring) {
         createSubscription.mutate(
           {
             billing: billingData,
-            customer: customerData,
+            customer: {
+              customer_id: customer_id,
+            },
             product_id: productId,
             quantity: 1,
           },
@@ -61,7 +71,9 @@ export default function ProductCard({ product }: { product: productDetails }) {
         createPayment.mutate(
           {
             billing: billingData,
-            customer: customerData,
+            customer: {
+              customer_id: response.customer_id,
+            },
             product_cart: [
               {
                 product_id: productId,

@@ -4,6 +4,8 @@ import { ThemeProvider } from "./theme-provider";
 import { Toaster } from "./ui/sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import SessionHandler from "./session-handler";
+import DodoCustomerDataHandler from "./dodo-customer-data-handler";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,6 +27,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         enableSystem
         disableTransitionOnChange
       >
+        <SessionHandler />
+        <DodoCustomerDataHandler />
         {children}
         <Toaster richColors />
       </ThemeProvider>

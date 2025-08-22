@@ -116,7 +116,7 @@ const createAuth = () =>
       openAPI(),
       dodopayments({
         client: dodoPaymentClient,
-        createCustomerOnSignUp: true,
+        createCustomerOnSignUp: false,
         use: [
           checkout({
             products: [

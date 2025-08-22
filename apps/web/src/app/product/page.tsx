@@ -2,10 +2,12 @@
 
 import ProductCard from "@/components/product-card";
 import { useProductsList } from "@/hooks/query/useProduct";
+import { useUserStore } from "@/store/user";
 import type { productDetails } from "@repo/types";
 
 export default function Product() {
   const { data: products, isLoading, error } = useProductsList();
+  const user = useUserStore((state) => state.user);
 
   return (
     <div>

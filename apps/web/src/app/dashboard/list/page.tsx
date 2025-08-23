@@ -10,7 +10,26 @@ import { useEffect, useState } from "react";
 
 export default function List() {
   const router = useRouter();
-  const { data: customerData, isLoading, error } = useCustomersList();
+  const { data: session, isPending: sessionPending } = authClient.useSession();
+  const { data: customerData, isLoading, error } = useCustomersList(!!session);
+
+  useEffect(() => {
+    if (!session && !sessionPending) {
+      router.push("/login");
+    }
+  }, [session, sessionPending, router]);
+
+  if (sessionPending) {
+    return <Skeleton className="h-9 w-24" />;
+  }
+
+  if (!session) {
+    return (
+      <Button variant="outline" asChild>
+        <Link href="/login">Sign In</Link>
+      </Button>
+    );
+  }
 
   if (isLoading) {
     return <Skeleton className="h-9 w-24" />;

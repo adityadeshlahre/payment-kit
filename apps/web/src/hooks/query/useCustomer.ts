@@ -3,7 +3,7 @@ import { queryKey } from "@repo/constants";
 import type { customerListResponse } from "@repo/types";
 import { useQuery } from "@tanstack/react-query";
 
-export const useCustomersList = () => {
+export const useCustomersList = (enabled: boolean = true) => {
   const handleFetchCustomersList = async (): Promise<customerListResponse> => {
     const response = await axiosInstance.get("/api/customer");
     return response.data;
@@ -14,6 +14,7 @@ export const useCustomersList = () => {
     queryFn: handleFetchCustomersList,
     staleTime: 5000,
     retry: 3,
+    enabled: enabled,
   });
 
   return query;
@@ -43,12 +44,13 @@ export const useCustomer = (params?: {
     queryFn: () => handleFetchCustomer(),
     staleTime: 5000,
     retry: 3,
+    enabled: !!params?.customerEmail,
   });
 
   return query;
 };
 
-export const useCustomerById = (customerId: string) => {
+export const useCustomerById = (customerId: string, enabled: boolean = true) => {
   const handlerFetchCustomerById = async (): Promise<customerListResponse> => {
     const response = await axiosInstance.get(`/api/customer/${customerId}`);
     return response.data;
@@ -59,7 +61,7 @@ export const useCustomerById = (customerId: string) => {
     queryFn: () => handlerFetchCustomerById(),
     staleTime: 5000,
     retry: 3,
-    enabled: !!customerId,
+    enabled: !!customerId && enabled,
   });
 
   return query;

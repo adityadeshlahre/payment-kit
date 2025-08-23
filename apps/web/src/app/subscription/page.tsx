@@ -1,9 +1,28 @@
 "use client";
 
 import { useSubscriptionList } from "@/hooks/query/useSubscription";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Subscription() {
-  const { data: subscriptions, isLoading, error } = useSubscriptionList();
+  const router = useRouter();
+  const { data: session, isPending: sessionPending } = authClient.useSession();
+  const { data: subscriptions, isLoading, error } = useSubscriptionList(!!session);
+
+  useEffect(() => {
+    if (!session && !sessionPending) {
+      router.push("/login");
+    }
+  }, [session, sessionPending, router]);
+
+  if (sessionPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (!session) {
+    return <div>Redirecting to login...</div>;
+  }
 
   return (
     <div>

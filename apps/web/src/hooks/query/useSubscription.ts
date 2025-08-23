@@ -5,7 +5,7 @@ import type {
 } from "@repo/types";
 import { useQuery } from "@tanstack/react-query";
 
-export const useSubscriptionList = () => {
+export const useSubscriptionList = (enabled: boolean = true) => {
   const handleFetchSubscriptions =
     async (): Promise<SubscriptionListResponse> => {
       const response = await axiosInstance.get("/api/subscription");
@@ -16,12 +16,13 @@ export const useSubscriptionList = () => {
     queryFn: handleFetchSubscriptions,
     staleTime: 5000,
     retry: 3,
+    enabled: enabled,
   });
 
   return query;
 };
 
-export const useSubscription = (subscriptionId: string) => {
+export const useSubscription = (subscriptionId: string, enabled: boolean = true) => {
   const handleFetchSubscription = async (): Promise<SubscriptionListItem> => {
     const response = await axiosInstance.get(`/api/product/${subscriptionId}`);
 
@@ -33,6 +34,7 @@ export const useSubscription = (subscriptionId: string) => {
     queryFn: handleFetchSubscription,
     staleTime: 5000,
     retry: 3,
+    enabled: !!subscriptionId && enabled,
   });
 
   return query;

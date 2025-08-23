@@ -75,7 +75,7 @@ export default function ProductCard({ product }: { product: productDetails }) {
           {
             billing: billingData,
             customer: {
-              customer_id: response.customer_id,
+              customer_id: customer_id,
             },
             product_cart: [
               {

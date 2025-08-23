@@ -38,7 +38,15 @@ export const createNewCustomerOnDodopayments = factory.createHandlers(
   async (c) => {
     try {
       const input = c.req.valid("json");
-
+      const existingCustomerResp = await dodoPaymentClient.customers.list({
+        email: input.email,
+      });
+      const existingCustomer = existingCustomerResp.items?.[0];
+      if (existingCustomer) {
+        return c.json(existingCustomer, {
+          status: HttpStatus.HTTP_200_OK,
+        });
+      }
       const customerData = await dodoPaymentClient.customers.create({
         name: input.name,
         email: input.email,

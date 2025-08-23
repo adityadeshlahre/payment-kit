@@ -38,6 +38,9 @@ export default function ProductDetails({
         email: session?.user.email || "",
         name: session?.user.name || "",
       });
+      if (response && response?.customer_id) {
+        router.refresh();
+      }
     }
     if (useDynamicPaymentLinks && !isPending && session) {
       if (loading) return;
@@ -75,7 +78,7 @@ export default function ProductDetails({
           {
             billing: billingData,
             customer: {
-              customer_id: response.customer_id,
+              customer_id: customer_id,
             },
             product_cart: [
               {

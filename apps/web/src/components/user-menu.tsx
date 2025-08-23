@@ -16,6 +16,9 @@ import Link from "next/link";
 export default function UserMenu() {
   const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
+  const clearDodoCustomerDetails = useUserStore(
+    (state) => state.clearDodoCustomerDetails,
+  );
 
   if (isPending) {
     return <Skeleton className="h-9 w-24" />;
@@ -46,7 +49,7 @@ export default function UserMenu() {
               authClient.signOut({
                 fetchOptions: {
                   onSuccess: () => {
-                    logout(); // Clear the Zustand store
+                    clearDodoCustomerDetails();
                     router.push("/");
                   },
                 },

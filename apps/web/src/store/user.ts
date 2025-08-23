@@ -41,7 +41,7 @@ export const useUserStore = create<UserAuthState>()(
         }),
     }),
     {
-      name: "user-storage",
+      name: "dodo-user-storage",
       partialize: (state) => ({
         dodoCustomerDetails: state.dodoCustomerDetails,
       }),

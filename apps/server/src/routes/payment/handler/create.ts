@@ -57,7 +57,7 @@ export const createOneTimePaymentHandler = factory.createHandlers(
           quantity: item.quantity,
         })),
         payment_link: true,
-        return_url: `${process.env.BETTER_AUTH_URL}/dashboard/status`,
+        return_url: `${process.env.DODO_RETURN_URL}/payment/status`,
       });
       return c.json(paymentData, HttpStatus.HTTP_201_CREATED);
     } catch (error) {

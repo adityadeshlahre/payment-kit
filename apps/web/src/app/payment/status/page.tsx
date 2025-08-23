@@ -44,6 +44,7 @@ export default function Status() {
       </div>
     );
   }
+  console.log("Payment Data:", paymentData);
 
   return (
     <div className="flex h-screen items-center justify-center">

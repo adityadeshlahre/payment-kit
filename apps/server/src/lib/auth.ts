@@ -125,7 +125,7 @@ const createAuth = () =>
                 slug: "premium-plan",
               },
             ],
-            successUrl: "/dashboard/success",
+            successUrl: "/payment/status",
             authenticatedUsersOnly: true,
           }),
           portal(),

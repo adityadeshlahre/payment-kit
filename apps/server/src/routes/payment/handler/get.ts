@@ -52,7 +52,7 @@ export const getOneTimePaymentWithIdHandler = factory.createHandlers(
       return c.json({ error: "Payment ID is required" }, 400);
     }
     try {
-      const paymentData = dodoPaymentClient.payments.retrieve(paymentId);
+      const paymentData = await dodoPaymentClient.payments.retrieve(paymentId);
       return c.json(paymentData, { status: HttpStatus.HTTP_200_OK });
     } catch (error) {
       console.error("Error retrieving payment:", error);

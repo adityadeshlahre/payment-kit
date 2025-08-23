@@ -16,7 +16,6 @@ import Link from "next/link";
 export default function UserMenu() {
   const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
-  const logout = useUserStore((state) => state.logout);
 
   if (isPending) {
     return <Skeleton className="h-9 w-24" />;

@@ -1,51 +1,24 @@
-import type {
-  CustomerDetails,
-  loginViEmailReponse,
-  UserAuthState,
-} from "@repo/types";
+import type { CustomerDetails, UserAuthState } from "@repo/types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+
+const initialCustomerDetails: CustomerDetails = {
+  business_id: "",
+  created_at: "",
+  customer_id: "",
+  email: "",
+  name: "",
+  phone_number: "",
+};
 
 export const useUserStore = create<UserAuthState>()(
   persist(
     (set) => ({
-      user: {
-        id: "",
-        email: "",
-        name: "",
-        image: "",
-        emailVerified: false,
-        createdAt: "",
-        updatedAt: "",
-      },
-
-      login: (user: loginViEmailReponse) => set({ user: user }),
-
-      logout: () =>
-        set({
-          user: {
-            id: "",
-            email: "",
-            name: "",
-            image: "",
-            emailVerified: false,
-            createdAt: "",
-            updatedAt: "",
-          },
-        }),
-
-      dodoCusomerDetails: {
-        business_id: "",
-        created_at: "",
-        customer_id: "",
-        email: "",
-        name: "",
-        phone_number: "",
-      } as CustomerDetails,
+      dodoCustomerDetails: initialCustomerDetails,
 
       setDodoCustomerDetails: (details: CustomerDetails) =>
         set({
-          dodoCusomerDetails: {
+          dodoCustomerDetails: {
             business_id: details.business_id,
             created_at: details.created_at,
             customer_id: details.customer_id,
@@ -57,7 +30,7 @@ export const useUserStore = create<UserAuthState>()(
 
       clearDodoCustomerDetails: () =>
         set({
-          dodoCusomerDetails: {
+          dodoCustomerDetails: {
             business_id: "",
             created_at: "",
             customer_id: "",
@@ -70,8 +43,7 @@ export const useUserStore = create<UserAuthState>()(
     {
       name: "user-storage",
       partialize: (state) => ({
-        user: state.user,
-        dodoCusomerDetails: state.dodoCusomerDetails,
+        dodoCustomerDetails: state.dodoCustomerDetails,
       }),
     },
   ),

@@ -19,9 +19,9 @@ export default function ProductCard({ product }: { product: productDetails }) {
   const { data: session, isPending } = authClient.useSession();
   const createNewCustomerDodo = useCustomerCreateNewCustomerDodo();
   const customer_id = useUserStore(
-    (state) => state.dodoCusomerDetails.customer_id,
+    (state) => state.dodoCustomerDetails.customer_id,
   );
-  const user = useUserStore((state) => state.user);
+  const curSession = authClient.useSession();
 
   const checkoutProduct = async (
     productId: string,
@@ -32,9 +32,12 @@ export default function ProductCard({ product }: { product: productDetails }) {
       if (loading) return;
       setLoading(true);
       const response = await createNewCustomerDodo.mutateAsync({
-        email: user.email,
-        name: user.name,
+        email: session?.user.email || "",
+        name: session?.user.name || "",
       });
+      if (response && response?.customer_id) {
+        router.refresh();
+      }
     }
     if (useDynamicPaymentLinks && !isPending && session) {
       if (loading) return;

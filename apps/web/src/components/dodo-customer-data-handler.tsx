@@ -3,11 +3,12 @@
 import { useEffect } from "react";
 import { useUserStore } from "@/store/user";
 import { useCustomer } from "@/hooks/query/useCustomer";
+import { authClient } from "@/lib/auth-client";
 
 export default function DodoCustomerDataHandler() {
-  const { email } = useUserStore((state) => state.user);
+  const { data: session } = authClient.useSession();
   const { data: customerData, isPending } = useCustomer({
-    customerEmail: email,
+    customerEmail: session?.user?.email,
   });
 
   useEffect(() => {

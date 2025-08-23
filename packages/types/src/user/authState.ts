@@ -1,13 +1,7 @@
-import {
-	CustomerDetails,
-	loginViEmailReponse,
-} from "../customers/customer-id-details";
+import { CustomerDetails } from "../customers/customer-id-details";
 
 export interface UserAuthState {
-	user: loginViEmailReponse;
-	dodoCusomerDetails: CustomerDetails;
-	login: (user: loginViEmailReponse) => void;
-	logout: () => void;
-	setDodoCustomerDetails: (details: CustomerDetails) => void;
-	clearDodoCustomerDetails: () => void;
+  dodoCustomerDetails: CustomerDetails;
+  setDodoCustomerDetails: (details: CustomerDetails) => void;
+  clearDodoCustomerDetails: () => void;
 }

@@ -57,12 +57,10 @@ const createAuth = () =>
               userEmail: user.email,
             }),
           });
-
           if (error) {
             console.error("Failed to send reset password email:", error);
             throw new Error("Failed to send reset password email");
           }
-
           console.log("Reset password email sent successfully:", data?.id);
         } catch (error) {
           console.error("Error sending reset password email:", error);
@@ -84,12 +82,10 @@ const createAuth = () =>
               userEmail: user.email,
             }),
           });
-
           if (error) {
             console.error("Failed to send verification email:", error);
             throw new Error("Failed to send verification email");
           }
-
           console.log("Verification email sent successfully:", data?.id);
         } catch (error) {
           console.error("Error sending verification email:", error);
@@ -99,7 +95,6 @@ const createAuth = () =>
       sendOnSignUp: true,
       autoSignInAfterVerification: true,
       expiresIn: 1800,
-      callbackURL: `${process.env.BETTER_AUTH_URL}/verify-email`,
     },
     secret: process.env.BETTER_AUTH_SECRET as string,
     baseURL: process.env.BETTER_AUTH_URL as string,

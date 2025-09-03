@@ -1,0 +1,253 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      server-changed: ${{ steps.changes.outputs.server }}
+      web-changed: ${{ steps.changes.outputs.web }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect changes
+        id: changes
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "server=true" >> $GITHUB_OUTPUT
+            echo "web=true" >> $GITHUB_OUTPUT
+          else
+            git diff --name-only HEAD^ HEAD > changed_files.txt
+            
+            if grep -E '^(apps/server/|packages/|package\.json|bun\.lock)' changed_files.txt; then
+              echo "server=true" >> $GITHUB_OUTPUT
+            else
+              echo "server=false" >> $GITHUB_OUTPUT
+            fi
+            
+            if grep -E '^(apps/web/|packages/|package\.json|bun\.lock)' changed_files.txt; then
+              echo "web=true" >> $GITHUB_OUTPUT
+            else
+              echo "web=false" >> $GITHUB_OUTPUT
+            fi
+          fi
+            else
+              echo "web=false" >> $GITHUB_OUTPUT
+            fi
+            
+            if grep -E '^packages/' changed_files.txt; then
+              echo "packages=true" >> $GITHUB_OUTPUT
+            else
+              echo "packages=false" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+  setup:
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.server-changed == 'true' || needs.detect-changes.outputs.web-changed == 'true'
+    outputs:
+      cache-key: ${{ steps.cache-key.outputs.key }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Generate cache key
+        id: cache-key
+        run: echo "key=${{ runner.os }}-bun-full-${{ hashFiles('**/bun.lock', '**/package.json') }}" >> $GITHUB_OUTPUT
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ steps.cache-key.outputs.key }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+  supabase-migrations:
+    runs-on: ubuntu-latest
+    needs: [detect-changes, setup]
+    if: needs.detect-changes.outputs.server-changed == 'true'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Restore cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Install Supabase CLI
+        run: |
+          curl -sSfL https://supabase.com/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Check and apply Supabase migrations
+        working-directory: apps/server
+        run: |
+          if [ ! -z "${{ secrets.SUPABASE_ACCESS_TOKEN }}" ] && [ ! -z "${{ secrets.SUPABASE_PROJECT_REF }}" ]; then
+            echo "Logging into Supabase..."
+            supabase login --token ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+            
+            echo "Linking to project..."
+            supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
+            
+            echo "Checking migration status..."
+            supabase db diff --linked || echo "No migration differences found"
+            
+            echo "Applying migrations..."
+            supabase db push --linked
+            
+            echo "Migrations completed successfully"
+          else
+            echo "Supabase credentials not configured, skipping migrations"
+            exit 0
+          fi
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+
+  deploy-server:
+    runs-on: ubuntu-latest
+    needs: [detect-changes, setup, supabase-migrations]
+    if: needs.detect-changes.outputs.server-changed == 'true' && (success() || needs.supabase-migrations.result == 'skipped')
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Restore cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build server application
+        run: bun run build --filter=server
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+          BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          DODO_SECRET_KEY: ${{ secrets.DODO_SECRET_KEY }}
+          DODO_WEBHOOK_SECRET: ${{ secrets.DODO_WEBHOOK_SECRET }}
+
+      - name: Deploy to Cloudflare Workers
+        working-directory: apps/server
+        run: bun x wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+
+  deploy-web:
+    runs-on: ubuntu-latest
+    needs: [detect-changes, setup]
+    if: needs.detect-changes.outputs.web-changed == 'true'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Restore cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build web application
+        run: bun run build --filter=web
+        env:
+          NEXT_PUBLIC_SERVER_URL: ${{ secrets.NEXT_PUBLIC_SERVER_URL }}
+          NEXT_PUBLIC_BETTER_AUTH_URL: ${{ secrets.NEXT_PUBLIC_BETTER_AUTH_URL }}
+
+      - name: Deploy to Cloudflare Pages
+        working-directory: apps/web
+        run: bun run deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+
+  deployment-status:
+    runs-on: ubuntu-latest
+    needs: [detect-changes, deploy-server, deploy-web]
+    if: always()
+    steps:
+      - name: Deployment Summary
+        run: |
+          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ needs.detect-changes.outputs.server-changed }}" = "true" ]; then
+            if [ "${{ needs.deploy-server.result }}" = "success" ]; then
+              echo "✅ Server deployed successfully" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ Server deployment failed" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "⏭️ Server deployment skipped (no changes)" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ needs.detect-changes.outputs.web-changed }}" = "true" ]; then
+            if [ "${{ needs.deploy-web.result }}" = "success" ]; then
+              echo "✅ Web deployed successfully" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ Web deployment failed" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "⏭️ Web deployment skipped (no changes)" >> $GITHUB_STEP_SUMMARY
+          fi

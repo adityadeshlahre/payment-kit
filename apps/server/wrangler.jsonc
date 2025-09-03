@@ -1,0 +1,12 @@
+{
+    "$schema": "../../node_modules/wrangler/config-schema.json",
+	"name": "paymentkit-server",
+	"main": "dist/index.js",
+	"compatibility_date": "2025-07-05",
+	"compatibility_flags": ["nodejs_compat"],
+	"minify": true,
+	"node_compat": true,
+	"vars": {
+		"NODE_ENV": "production"
+	}
+}

@@ -29,10 +29,13 @@ export default function SignUpForm({
           email: value.email,
           password: value.password,
           name: value.name,
+          callbackURL: `${process.env.NEXT_PUBLIC_BASE_URL}/verify-email`,
         },
         {
           onSuccess: () => {
-            toast.success("Account created! Please check your email for a verification link.");
+            toast.success(
+              "Account created! Please check your email for a verification link.",
+            );
             onSwitchToSignIn();
           },
           onError: (error) => {

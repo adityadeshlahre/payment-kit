@@ -12,7 +12,15 @@ const subscription = new Hono()
   .get("/", enforceUserOrAdminAuth, ...getSubscriptionListHandler)
   .get("/:id", enforceUserOrAdminAuth, ...getSubscriptionWithIdHandler)
   .post("/", enforceUserOrAdminAuth, ...createSubscriptionPaymentHandler)
-  .post("/:id/change-plan", enforceUserOrAdminAuth, ...changePlanSubscriptionWithSubscriptionIdHandler)
-  .patch("/:id", enforceUserOrAdminAuth, ...patchSubscriptionWithSubscriptionIdHandler);
+  .post(
+    "/:id/change-plan",
+    enforceUserOrAdminAuth,
+    ...changePlanSubscriptionWithSubscriptionIdHandler,
+  )
+  .patch(
+    "/:id",
+    enforceUserOrAdminAuth,
+    ...patchSubscriptionWithSubscriptionIdHandler,
+  );
 
 export default subscription;

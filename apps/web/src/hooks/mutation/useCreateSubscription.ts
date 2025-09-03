@@ -1,4 +1,5 @@
 import axiosInstance from "@/lib/api";
+import { useSubscriptionStore } from "@/store/subscription";
 import type {
   DodoPaymentSubscriptionCreatePaymentInput,
   DodoPaymentSubscriptionCreatePaymentResponse,
@@ -7,6 +8,9 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 const useCreateSubscriptionMutation = () => {
+  const setSubscriptionId = useSubscriptionStore(
+    (state) => state.setSubscriptionId,
+  );
   const handleCreateSubscription = async (
     dodoPaymentSubscriptionCreatePaymentInput: DodoPaymentSubscriptionCreatePaymentInput,
   ): Promise<DodoPaymentSubscriptionCreatePaymentResponse> => {
@@ -22,6 +26,7 @@ const useCreateSubscriptionMutation = () => {
   const handleSuccess = (
     data: DodoPaymentSubscriptionCreatePaymentResponse,
   ) => {
+    setSubscriptionId(data.subscription_id);
     return data;
   };
   const handleError = (error: any) => {

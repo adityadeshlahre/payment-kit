@@ -8,6 +8,7 @@
     "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
     "dev": "bun run --hot src/index.ts",
     "start": "bun run dist/index.js",
+    "deploy": "bun x wrangler deploy",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "db:generate": "drizzle-kit generate",
@@ -45,6 +46,7 @@
     "@types/pg": "^8.15.5",
     "drizzle-kit": "^0.31.4",
     "tsdown": "^0.14.1",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "wrangler": "^4.30.0"
   }
 }

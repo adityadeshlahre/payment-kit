@@ -8,7 +8,11 @@ import { useEffect } from "react";
 export default function Subscription() {
   const router = useRouter();
   const { data: session, isPending: sessionPending } = authClient.useSession();
-  const { data: subscriptions, isLoading, error } = useSubscriptionList(!!session);
+  const {
+    data: subscriptions,
+    isLoading,
+    error,
+  } = useSubscriptionList(!!session);
 
   useEffect(() => {
     if (!session && !sessionPending) {

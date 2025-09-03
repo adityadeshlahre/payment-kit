@@ -52,7 +52,7 @@ export const sendEmailHandler = factory.createHandlers(
       const templateProps = { fromMail, fromName, url: url ?? "", userEmail };
 
       const { data: response, error } = await resend.emails.send({
-        from: `${fromName} <${fromMail}>`,
+        from: fromMail,
         to: email,
         subject: `${subject}`,
         react:

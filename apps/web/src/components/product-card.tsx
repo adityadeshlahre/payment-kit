@@ -21,7 +21,6 @@ export default function ProductCard({ product }: { product: productDetails }) {
   const customer_id = useUserStore(
     (state) => state.dodoCustomerDetails.customer_id,
   );
-  const curSession = authClient.useSession();
 
   const checkoutProduct = async (
     productId: string,

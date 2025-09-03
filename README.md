@@ -2,7 +2,7 @@
 
 Docs : https://payment-kit-api.onrender.com/docs
 
-Web : paymentkit.wymaditya-deploy.workers.dev/
+Web : https://paymentkit.wymaditya-deploy.workers.dev/
 
 Web 2 : https://payment-kit-web.onrender.com
 
